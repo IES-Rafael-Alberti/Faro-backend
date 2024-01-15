@@ -8,8 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     MongooseModule.forRoot(
-      //`mongodb+srv://{user}:{pwd}@faro-cluster-0.lchdolp.mongodb.net/faro?retryWrites=true&w=majority`,
-      'mongodb://localhost:27017/faro',
+      process.env.MONGO_URI || 'mongodb://localhost:27017/faro',
     ),
     UserModule,
     ConfigModule.forRoot({ envFilePath: `${process.env.NODE_ENV}.env` }),
