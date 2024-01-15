@@ -33,3 +33,13 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# API test
+/faro-api-test
+
+.env
+dev.env
+
+# MongoDB
+/docker/mongo-data
+/docker/mongo-data/*
