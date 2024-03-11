@@ -11,7 +11,6 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: 1234
     volumes:
-      #- ./docker/mariadb_data:/var/lib/mysql
       # DB structure and data
       - ./docker/db_scripts:/docker-entrypoint-initdb.d
 
