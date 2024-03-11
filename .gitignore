@@ -40,5 +40,5 @@ lerna-debug.log*
 .env
 dev.env
 
-# MongoDB
-/docker/mongo-data
+# MariaDB data
+/docker
