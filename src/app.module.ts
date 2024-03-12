@@ -4,7 +4,9 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: `${process.env.NODE_ENV}.env` }),
+    ConfigModule.forRoot({
+      envFilePath: `src/config/${process.env.NODE_ENV}.env`,
+    }),
   ],
   controllers: [AppController],
   providers: [],
