@@ -12,6 +12,7 @@ import { Publication } from './modules/publications/entities/publication.entity'
     ConfigModule.forRoot({
       envFilePath: `src/config/${process.env.NODE_ENV}.env`,
     }),
+    // TODO: Extract the database configuration to an external file
     TypeOrmModule.forRoot({
       type: 'mariadb',
       host: 'localhost',

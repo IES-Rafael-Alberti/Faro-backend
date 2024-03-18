@@ -3,30 +3,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Publication } from './entities/publication.entity';
 import { BadRequestException } from '@nestjs/common';
+import { ObjectLiteral } from 'typeorm';
+import { UsersService } from '../users/users.service';
 
-/*
-DROP TABLE IF EXISTS `faro`.`users_publications` ;
-
-CREATE TABLE IF NOT EXISTS `faro`.`users_publications` (
-  `user_publication_id` BINARY(16) NOT NULL,
-  `user_publication_msg` VARCHAR(2048) NOT NULL,
-  `users_publications_created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-  `users_user_id` BINARY(16) NOT NULL,
-  `users_users_profiles_user_profile_id` BINARY(16) NOT NULL,
-  PRIMARY KEY (`user_publication_id`, `users_user_id`, `users_users_profiles_user_profile_id`),
-  INDEX `fk_users_publications_users1_idx` (`users_user_id` ASC, `users_users_profiles_user_profile_id` ASC) VISIBLE,
-  CONSTRAINT `fk_users_publications_users1`
-    FOREIGN KEY (`users_user_id` , `users_users_profiles_user_profile_id`)
-    REFERENCES `faro`.`users` (`user_id` , `users_profiles_user_profile_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
-*/
+// BUG: The service fails to import the UsersService
+// use dto instead of entities
 
 @Injectable()
 export class PublicationsService {
   constructor(
     @InjectRepository(Publication)
     private publicationsRepository: Repository<Publication>,
+    private usersService: UsersService,
   ) {}
 
   findAll(): Promise<Publication[]> {
@@ -34,14 +22,33 @@ export class PublicationsService {
   }
 
   async create(publication: Publication): Promise<Publication> {
-    // Assert the msg is not empty
-    if (!publication.user_publication_msg) {
-      throw new BadRequestException('The publication message cannot be empty.');
+    if (!publication.user) {
+      throw new BadRequestException('The user is required');
     }
-    return this.publicationsRepository.save(publication);
+    // Assert the user exists
+    const user = await this.usersService.findOne(publication.user.user_id);
+    if (!user) {
+      throw new BadRequestException('The user does not exist');
+    }
+    // Assert the publication message is not empty
+    if (!publication.user_publication_msg) {
+      throw new BadRequestException('The publication message is required');
+    }
+    return await this.publicationsRepository.save(publication);
   }
 
   async remove(id: string): Promise<void> {
+    // Assert id is not empty
+    if (!id) {
+      throw new BadRequestException('The id is required');
+    }
+    // Assert the publication exists
+    const publication = await this.publicationsRepository.findOne({
+      where: { user_publication_id: id } as ObjectLiteral,
+    });
+    if (!publication) {
+      throw new BadRequestException('The publication does not exist');
+    }
     await this.publicationsRepository.delete(id);
   }
 }
