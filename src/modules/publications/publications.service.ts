@@ -6,9 +6,6 @@ import { BadRequestException } from '@nestjs/common';
 import { ObjectLiteral } from 'typeorm';
 import { UsersService } from '../users/users.service';
 
-// BUG: The service fails to import the UsersService
-// use dto instead of entities
-
 @Injectable()
 export class PublicationsService {
   constructor(

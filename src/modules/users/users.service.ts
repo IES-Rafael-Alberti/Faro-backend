@@ -17,7 +17,7 @@ export class UsersService {
 
   findOne(id: string): Promise<User | null> {
     return this.usersRepository.findOne({
-      where: { id: id } as FindOptionsWhere<User>,
+      where: { user_id: id } as FindOptionsWhere<User>,
     });
   }
 
