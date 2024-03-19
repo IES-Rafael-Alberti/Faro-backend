@@ -6,6 +6,7 @@ import { UsersModule } from './modules/users/users.module';
 import { User } from './modules/users/entities/user.entity';
 import { PublicationsModule } from './modules/publications/publications.module';
 import { Publication } from './modules/publications/entities/publication.entity';
+import { ProfilesModule } from './modules/profiles/profiles.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { Publication } from './modules/publications/entities/publication.entity'
     }),
     UsersModule,
     PublicationsModule,
+    ProfilesModule,
   ],
   controllers: [AppController],
   providers: [],
