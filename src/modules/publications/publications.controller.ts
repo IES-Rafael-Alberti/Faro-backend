@@ -1,19 +1,21 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { PublicationsService } from './publications.service';
-import { Publication } from './entities/publication.entity';
+import { CreatePublicationDto } from './entities/publication.dto';
 
 @Controller('publications')
 export class PublicationsController {
   constructor(private readonly publicationsService: PublicationsService) {}
 
   @Get()
-  findAll(): Promise<Publication[]> {
+  findAll(): Promise<CreatePublicationDto[]> {
     return this.publicationsService.findAll();
   }
 
   @Post()
-  create(@Body() publication: Publication): Promise<Publication> {
-    return this.publicationsService.create(publication);
+  create(
+    @Body() createPublicationDto: CreatePublicationDto,
+  ): Promise<CreatePublicationDto> {
+    return this.publicationsService.create(createPublicationDto);
   }
 
   @Delete(':id')

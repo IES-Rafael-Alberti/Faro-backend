@@ -5,6 +5,7 @@ import { Publication } from './entities/publication.entity';
 import { BadRequestException } from '@nestjs/common';
 import { ObjectLiteral } from 'typeorm';
 import { UsersService } from '../users/users.service';
+import { CreatePublicationDto } from './entities/publication.dto';
 
 @Injectable()
 export class PublicationsService {
@@ -14,31 +15,59 @@ export class PublicationsService {
     private usersService: UsersService,
   ) {}
 
-  findAll(): Promise<Publication[]> {
-    return this.publicationsRepository.find();
+  async findAll(): Promise<CreatePublicationDto[]> {
+    return this.publicationsRepository.find().then((publications) =>
+      publications.map((publication) => {
+        const {
+          user_publication_id,
+          user_publication_msg,
+          users_publications_created_at,
+          users_user_id,
+        } = publication;
+        const publicationDto: CreatePublicationDto = {
+          id: user_publication_id,
+          msg: user_publication_msg,
+          created_at: users_publications_created_at,
+          user_id: users_user_id,
+        };
+        return publicationDto;
+      }),
+    );
   }
 
-  async create(publication: Publication): Promise<Publication> {
-    if (!publication.user) {
-      throw new BadRequestException('The user is required');
-    }
+  async create(
+    createPublicationDto: CreatePublicationDto,
+  ): Promise<CreatePublicationDto> {
+    const { msg, user_id } = createPublicationDto;
     // Assert the user exists
-    const user = await this.usersService.findOne(publication.user.user_id);
+    const user = await this.usersService.findOne(user_id);
     if (!user) {
       throw new BadRequestException('The user does not exist');
     }
-    // Assert the publication message is not empty
-    if (!publication.user_publication_msg) {
-      throw new BadRequestException('The publication message is required');
-    }
-    return await this.publicationsRepository.save(publication);
+    const publication = new Publication();
+    publication.user = user;
+    publication.user_publication_msg = msg;
+
+    return await this.publicationsRepository
+      .save(publication)
+      .then((publication) => {
+        const {
+          user_publication_id,
+          user_publication_msg,
+          users_publications_created_at,
+          users_user_id,
+        } = publication;
+        const publicationDto: CreatePublicationDto = {
+          id: user_publication_id,
+          msg: user_publication_msg,
+          created_at: users_publications_created_at,
+          user_id: users_user_id,
+        };
+        return publicationDto;
+      });
   }
 
   async remove(id: string): Promise<void> {
-    // Assert id is not empty
-    if (!id) {
-      throw new BadRequestException('The id is required');
-    }
     // Assert the publication exists
     const publication = await this.publicationsRepository.findOne({
       where: { user_publication_id: id } as ObjectLiteral,
