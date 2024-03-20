@@ -77,4 +77,33 @@ export class PublicationsService {
     }
     await this.publicationsRepository.delete(id);
   }
+
+  async findAllFromUser(user_id: string): Promise<CreatePublicationDto[]> {
+    // Assert the user exists
+    const user = await this.usersService.findOne(user_id);
+    if (!user) {
+      throw new BadRequestException('The user does not exist');
+    }
+    return this.publicationsRepository
+      .find({
+        where: { users_user_id: user_id } as ObjectLiteral,
+      })
+      .then((publications) =>
+        publications.map((publication) => {
+          const {
+            user_publication_id,
+            user_publication_msg,
+            users_publications_created_at,
+            users_user_id,
+          } = publication;
+          const publicationDto: CreatePublicationDto = {
+            id: user_publication_id,
+            msg: user_publication_msg,
+            created_at: users_publications_created_at,
+            user_id: users_user_id,
+          };
+          return publicationDto;
+        }),
+      );
+  }
 }

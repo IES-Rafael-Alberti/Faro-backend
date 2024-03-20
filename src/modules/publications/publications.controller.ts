@@ -22,4 +22,9 @@ export class PublicationsController {
   remove(@Param('id') id: string): Promise<void> {
     return this.publicationsService.remove(id);
   }
+
+  @Get('user/:id')
+  findAllFromUser(@Param('id') id: string): Promise<CreatePublicationDto[]> {
+    return this.publicationsService.findAllFromUser(id);
+  }
 }
