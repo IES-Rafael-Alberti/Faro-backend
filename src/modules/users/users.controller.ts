@@ -25,10 +25,6 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @Post()
-  create(@Body() user: User): Promise<User> {
-    return this.usersService.create(user);
-  }
 
   @Put(':id')
   update(@Param('id') id: string, @Body() user: User): Promise<void> {
@@ -44,6 +40,17 @@ export class UsersController {
   patch(@Param('id') id: string, @Body() user: User): Promise<void> {
     return this.usersService.patch(id, user);
   }
+  @Post('login')
+  login(@Body() user: User): Promise<User> {
+    return this.usersService.login(user);
+  }
+
+
+  @Post('register')
+  register(@Body() user: User): Promise<User> {
+    return this.usersService.register(user);
+  }
+
 }
 
 /*
