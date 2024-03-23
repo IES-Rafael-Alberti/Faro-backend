@@ -24,16 +24,11 @@ export class UsersController {
   findOne(@Param('id') id: string): Promise<User | null> {
     return this.usersService.findOne(id);
   }
-  @Post('login')
-  login(@Body() user: User): Promise<User> {
-    return this.usersService.login(user);
-  }
 
-  @Post('register')
-  register(@Body() user: User): Promise<User> {
-    return this.usersService.register(user);
+  @Post()
+  create(@Body() user: User): Promise<User> {
+    return this.usersService.create(user);
   }
-
 
   @Put(':id')
   update(@Param('id') id: string, @Body() user: User): Promise<void> {
