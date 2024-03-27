@@ -25,7 +25,6 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-
   @Put(':id')
   update(@Param('id') id: string, @Body() user: User): Promise<void> {
     return this.usersService.update(id, user);
@@ -45,12 +44,10 @@ export class UsersController {
     return this.usersService.login(user);
   }
 
-
   @Post('register')
   register(@Body() user: User): Promise<User> {
     return this.usersService.register(user);
   }
-
 }
 
 /*
