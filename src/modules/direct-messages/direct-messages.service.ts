@@ -1,0 +1,85 @@
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { DirectMessage } from './entities/direct-messages.entity';
+import { CreateDirectMessageDto } from './entities/direct-messages.dto';
+import { UsersService } from '../users/users.service';
+
+@Injectable()
+export class DirectMessagesService {
+  constructor(
+    @InjectRepository(DirectMessage)
+    private directMessagesRepository: Repository<DirectMessage>,
+    private usersService: UsersService,
+  ) {}
+
+  async getAllDirectMessagesFromTwoUsers(
+    sender_id: string,
+    receiver_id: string,
+  ): Promise<CreateDirectMessageDto[]> {
+    // Assert that the sender and receiver exist
+    const sender = await this.usersService.findOne(sender_id);
+    const receiver = await this.usersService.findOne(receiver_id);
+    if (!sender || !receiver) {
+      throw new HttpException(
+        'Sender or receiver not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const directMessages = await this.directMessagesRepository
+      .find({
+        where: [
+          {
+            user_direct_message_sender: sender_id,
+            user_direct_message_receiber: receiver_id,
+          },
+          {
+            user_direct_message_sender: receiver_id,
+            user_direct_message_receiber: sender_id,
+          },
+        ],
+      })
+      .then((directMessages) => {
+        return directMessages.map((directMessage) => {
+          return {
+            msg: directMessage.user_direct_message_msg,
+            sender_id: directMessage.user_direct_message_sender,
+            receiver_id: directMessage.user_direct_message_receiber,
+            message_id: directMessage.users_direct_message_id,
+          };
+        });
+      });
+    return directMessages;
+  }
+
+  async create(
+    createDirectMessageDto: CreateDirectMessageDto,
+  ): Promise<CreateDirectMessageDto> {
+    const { sender_id, receiver_id } = createDirectMessageDto;
+    // Assert that the sender and receiver exist
+    const sender = await this.usersService.findOne(sender_id);
+    const receiver = await this.usersService.findOne(receiver_id);
+    if (!sender || !receiver) {
+      throw new HttpException(
+        'Sender or receiver not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    // Assert that serder is not the same as receiver
+    if (sender_id === receiver_id) {
+      throw new HttpException(
+        'Sender and receiver cannot be the same',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const { msg } = createDirectMessageDto;
+    const directMessage = await this.directMessagesRepository.create({
+      user_direct_message_msg: msg,
+      user_direct_message_sender: sender_id,
+      user_direct_message_receiber: receiver_id,
+      users_direct_message_id: createDirectMessageDto.message_id,
+    });
+    await this.directMessagesRepository.save(directMessage);
+    return createDirectMessageDto;
+  }
+}
