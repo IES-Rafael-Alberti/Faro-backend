@@ -8,8 +8,11 @@ import {
   Put,
   Patch,
 } from '@nestjs/common';
+
+import { LoginDTO } from './entities/logIn.dto';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
+import { UserDTO } from './entities/user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -40,12 +43,12 @@ export class UsersController {
     return this.usersService.patch(id, user);
   }
   @Post('login')
-  login(@Body() user: User): Promise<User> {
-    return this.usersService.login(user);
+  login(@Body() loginDTO: LoginDTO): Promise<User> {
+    return this.usersService.login(loginDTO);
   }
 
   @Post('register')
-  register(@Body() user: User): Promise<User> {
+  register(@Body() user: UserDTO): Promise<User> {
     return this.usersService.register(user);
   }
 }
