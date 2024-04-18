@@ -26,6 +26,13 @@ export class DirectMessagesService {
         HttpStatus.NOT_FOUND,
       );
     }
+    // Assert that serder is not the same as receiver
+    if (sender_id === receiver_id) {
+      throw new HttpException(
+        'Sender and receiver cannot be the same',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const directMessages = await this.directMessagesRepository
       .find({
         where: [
