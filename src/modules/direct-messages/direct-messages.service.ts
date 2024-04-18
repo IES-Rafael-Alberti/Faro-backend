@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { DirectMessage } from './entities/direct-messages.entity';
 import { CreateDirectMessageDto } from './entities/direct-messages.dto';
 import { UsersService } from '../users/users.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class DirectMessagesService {
@@ -84,7 +85,7 @@ export class DirectMessagesService {
       user_direct_message_msg: msg,
       user_direct_message_sender: sender_id,
       user_direct_message_receiber: receiver_id,
-      users_direct_message_id: createDirectMessageDto.message_id,
+      users_direct_message_id: uuidv4(),
     });
     await this.directMessagesRepository.save(directMessage);
     return createDirectMessageDto;

@@ -14,9 +14,4 @@ export class CreateDirectMessageDto {
   @IsString()
   @IsNotEmpty()
   receiver_id: string;
-
-  @IsUUID()
-  @IsString()
-  @IsNotEmpty()
-  message_id: string;
 }
