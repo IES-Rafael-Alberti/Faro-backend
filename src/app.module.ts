@@ -3,11 +3,9 @@ import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './modules/users/users.module';
-import { User } from './modules/users/entities/user.entity';
 import { PublicationsModule } from './modules/publications/publications.module';
-import { Publication } from './modules/publications/entities/publication.entity';
 import { DirectMessagesModule } from './modules/direct-messages/direct-messages.module';
-import { DirectMessage } from './modules/direct-messages/entities/direct-messages.entity';
+import { ConnectionsModule } from './modules/connections/connections.module';
 
 @Module({
   imports: [
@@ -30,6 +28,7 @@ import { DirectMessage } from './modules/direct-messages/entities/direct-message
     UsersModule,
     PublicationsModule,
     DirectMessagesModule,
+    ConnectionsModule,
   ],
   controllers: [AppController],
   providers: [],
