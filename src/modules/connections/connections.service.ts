@@ -54,6 +54,19 @@ export class ConnectionsService {
       user_id: connected_user_id,
       connected_user_id: user_id,
     });
+    // Delete request connections
+    const requestConnection1 = await this.requestConnectionsRepository.findOne({
+      where: { applicant_id: user_id, required_id: connected_user_id },
+    });
+    if (requestConnection1) {
+      await this.requestConnectionsRepository.delete(requestConnection1);
+    }
+    const requestConnection2 = await this.requestConnectionsRepository.findOne({
+      where: { applicant_id: connected_user_id, required_id: user_id },
+    });
+    if (requestConnection2) {
+      await this.requestConnectionsRepository.delete(requestConnection2);
+    }
     return { message: 'Connection created successfully' };
   }
 
