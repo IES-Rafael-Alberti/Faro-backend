@@ -18,7 +18,7 @@ export class ConnectionsController {
   @Get(':user_id')
   async getAllConnectionsFromUser(
     @Param('user_id') user_id: string,
-  ): Promise<CreateConnectionDto[]> {
+  ): Promise<string[]> {
     return await this.connectionsService.getAllConnectionsFromUser(user_id);
   }
 

@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Connection } from './entities/connections.entity';
-import { CreateConnectionDto } from './entities/connections.dto';
 import { RequestConnection } from './entities/request_connections.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { UsersService } from '../users/users.service';
@@ -18,55 +17,30 @@ export class ConnectionsService {
     private usersService: UsersService,
   ) {}
 
-  async getAllConnectionsFromUser(
-    user_id: string,
-  ): Promise<CreateConnectionDto[]> {
+  async getAllConnectionsFromUser(user_id: string): Promise<string[]> {
     const connections = await this.connectionsRepository
-      .find({
-        where: {
-          user_id,
-        },
-      })
-      .then((connections) => {
-        return connections.map((connection) => {
-          return {
-            user_id: connection.user_id,
-            connected_user_id: connection.connected_user_id,
-          };
-        });
-      });
-    return connections;
+      .createQueryBuilder('connection')
+      .where('connection.user_id = :user_id', { user_id })
+      .orWhere('connection.connected_user_id = :user_id', { user_id })
+      .getMany();
+
+    return connections.map((connection) => {
+      return connection.user_id === user_id
+        ? connection.connected_user_id
+        : connection.user_id;
+    });
   }
 
   async createConnection(
     user_id: string,
     connected_user_id: string,
   ): Promise<{ message: string }> {
-    const id_1 = uuidv4();
-    const id_2 = uuidv4();
+    const id = uuidv4();
     await this.connectionsRepository.save({
-      connection_id: id_1,
+      connection_id: id,
       user_id: user_id,
       connected_user_id: connected_user_id,
     });
-    await this.connectionsRepository.save({
-      connection_id: id_2,
-      user_id: connected_user_id,
-      connected_user_id: user_id,
-    });
-    // Delete request connections
-    const requestConnection1 = await this.requestConnectionsRepository.findOne({
-      where: { applicant_id: user_id, required_id: connected_user_id },
-    });
-    if (requestConnection1) {
-      await this.requestConnectionsRepository.delete(requestConnection1);
-    }
-    const requestConnection2 = await this.requestConnectionsRepository.findOne({
-      where: { applicant_id: connected_user_id, required_id: user_id },
-    });
-    if (requestConnection2) {
-      await this.requestConnectionsRepository.delete(requestConnection2);
-    }
     return { message: 'Connection created successfully' };
   }
 
@@ -91,10 +65,19 @@ export class ConnectionsService {
       );
     }
     // If the connection already exists, return an error
-    const connection = await this.connectionsRepository.findOne({
+    const connection_1 = await this.connectionsRepository.findOne({
       where: { user_id: applicant_id, connected_user_id: required_id },
     });
-    if (connection) {
+    if (connection_1) {
+      throw new HttpException(
+        'Connection already exists',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const connection_2 = await this.connectionsRepository.findOne({
+      where: { user_id: required_id, connected_user_id: applicant_id },
+    });
+    if (connection_2) {
       throw new HttpException(
         'Connection already exists',
         HttpStatus.BAD_REQUEST,
@@ -115,6 +98,8 @@ export class ConnectionsService {
       where: { applicant_id: required_id, required_id: applicant_id },
     });
     if (connectionRequest) {
+      // Delete the request connection
+      await this.requestConnectionsRepository.delete(connectionRequest);
       return this.createConnection(applicant_id, required_id);
     }
     // Create the request connection
