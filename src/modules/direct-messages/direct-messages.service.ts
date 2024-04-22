@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { DirectMessage } from './entities/direct-messages.entity';
 import { CreateDirectMessageDto } from './entities/direct-messages.dto';
 import { UsersService } from '../users/users.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class DirectMessagesService {
@@ -24,6 +25,13 @@ export class DirectMessagesService {
       throw new HttpException(
         'Sender or receiver not found',
         HttpStatus.NOT_FOUND,
+      );
+    }
+    // Assert that serder is not the same as receiver
+    if (sender_id === receiver_id) {
+      throw new HttpException(
+        'Sender and receiver cannot be the same',
+        HttpStatus.BAD_REQUEST,
       );
     }
     const directMessages = await this.directMessagesRepository
@@ -77,7 +85,7 @@ export class DirectMessagesService {
       user_direct_message_msg: msg,
       user_direct_message_sender: sender_id,
       user_direct_message_receiber: receiver_id,
-      users_direct_message_id: createDirectMessageDto.message_id,
+      users_direct_message_id: uuidv4(),
     });
     await this.directMessagesRepository.save(directMessage);
     return createDirectMessageDto;

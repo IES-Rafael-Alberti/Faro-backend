@@ -11,6 +11,9 @@ import { UserDTO } from './entities/user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { Logger } from '@nestjs/common';
 
+// TODO: Implement exceptions for user HttpException HttpStatus
+// TODO: Implement token
+
 @Injectable()
 export class UsersService {
   private readonly logger: Logger;

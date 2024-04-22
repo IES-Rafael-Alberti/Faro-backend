@@ -1,8 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Publication } from './entities/publication.entity';
-import { BadRequestException } from '@nestjs/common';
 import { ObjectLiteral } from 'typeorm';
 import { UsersService } from '../users/users.service';
 import { CreatePublicationDto } from './entities/publication.dto';
@@ -42,7 +41,7 @@ export class PublicationsService {
     // Assert the user exists
     const user = await this.usersService.findOneById(user_id);
     if (!user) {
-      throw new BadRequestException('The user does not exist');
+      throw new HttpException('The user does not exist', HttpStatus.NOT_FOUND);
     }
     const publication = new Publication();
     publication.user = user;
@@ -73,7 +72,10 @@ export class PublicationsService {
       where: { user_publication_id: id } as ObjectLiteral,
     });
     if (!publication) {
-      throw new BadRequestException('The publication does not exist');
+      throw new HttpException(
+        'The publication does not exist',
+        HttpStatus.NOT_FOUND,
+      );
     }
     await this.publicationsRepository.delete(id);
   }
@@ -82,7 +84,7 @@ export class PublicationsService {
     // Assert the user exists
     const user = await this.usersService.findOneById(user_id);
     if (!user) {
-      throw new BadRequestException('The user does not exist');
+      throw new HttpException('The user does not exist', HttpStatus.NOT_FOUND);
     }
     return this.publicationsRepository
       .find({

@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Param } from '@nestjs/common';
 import { DirectMessagesService } from './direct-messages.service';
 import { CreateDirectMessageDto } from './entities/direct-messages.dto';
 import { Body, Get, Post } from '@nestjs/common';
@@ -10,8 +10,8 @@ export class DirectMessagesController {
   // Get all direct messages from two users
   @Get('sender/:senderId/receiver/:receiverId')
   findAll(
-    senderId: string,
-    receiverId: string,
+    @Param('senderId') senderId: string,
+    @Param('receiverId') receiverId: string,
   ): Promise<CreateDirectMessageDto[]> {
     return this.directMessagesService.getAllDirectMessagesFromTwoUsers(
       senderId,
