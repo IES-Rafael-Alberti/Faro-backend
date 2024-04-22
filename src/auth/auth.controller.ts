@@ -1,5 +1,5 @@
 import { Body, Controller, Logger, Post, UseGuards } from '@nestjs/common';
-import { Request } from '@nestjs/common';
+
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { UserDTO } from 'src/modules/users/entities/user.dto';
@@ -14,7 +14,7 @@ export class AuthController {
   ) {
     this.logger = new Logger('AuthController');
   }
-
+  @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Body() user: UserDTO) {
     this.logger.log(`Logging in user: ${user}`);
