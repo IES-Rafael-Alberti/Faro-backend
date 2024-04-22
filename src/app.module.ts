@@ -8,6 +8,7 @@ import { PublicationsModule } from './modules/publications/publications.module';
 import { Publication } from './modules/publications/entities/publication.entity';
 import { DirectMessagesModule } from './modules/direct-messages/direct-messages.module';
 import { DirectMessage } from './modules/direct-messages/entities/direct-messages.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { DirectMessage } from './modules/direct-messages/entities/direct-message
     UsersModule,
     PublicationsModule,
     DirectMessagesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [],

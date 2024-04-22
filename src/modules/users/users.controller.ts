@@ -12,7 +12,6 @@ import {
 import { LoginDTO } from './entities/logIn.dto';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
-import { UserDTO } from './entities/user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -25,7 +24,7 @@ export class UsersController {
 
   @Get(':id')
   findOne(@Param('id') id: string): Promise<User | null> {
-    return this.usersService.findOne(id);
+    return this.usersService.findOneByEmail(id);
   }
 
   @Put(':id')
@@ -45,11 +44,6 @@ export class UsersController {
   @Post('login')
   login(@Body() loginDTO: LoginDTO): Promise<User> {
     return this.usersService.login(loginDTO);
-  }
-
-  @Post('register')
-  register(@Body() user: UserDTO): Promise<User> {
-    return this.usersService.register(user);
   }
 }
 
