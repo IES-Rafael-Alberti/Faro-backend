@@ -21,13 +21,14 @@ export class AuthService {
     if (user && (await bcrypt.compare(pass, user.user_password))) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { user_password, ...result } = user;
+      this.logger.log('Entering return');
       return result;
     }
     return null;
   }
 
   async login(user: UserDTO) {
-    const payload = { email: user.email, sub: user.userId };
+    const payload = { email: user.email };
     this.logger.log(`Logging in user: ${JSON.stringify(user)}`);
     return {
       ...user,

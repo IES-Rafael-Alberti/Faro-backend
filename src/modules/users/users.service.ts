@@ -56,7 +56,7 @@ export class UsersService {
   }
 
   async create(userDto: UserDTO): Promise<UserDTO> {
-    const { email, password, userName, firstSurname } = userDto;
+    const { email, password, username: userName, firstSurname } = userDto;
     const existingUser = await this.findOneByEmail(email);
     if (existingUser) {
       throw new BadRequestException('The user already exists');
@@ -75,7 +75,7 @@ export class UsersService {
       const userDto: UserDTO = {
         userId: user_id,
         email: user_email,
-        userName: user_name,
+        username: user_name,
         password: user.user_password,
         firstSurname: user_first_surname,
       };
