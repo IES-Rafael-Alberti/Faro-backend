@@ -34,6 +34,7 @@ export class UserDto {
   password: string;
 
   @IsEnum(['admin', 'teacher', 'company', 'student'])
+  @IsOptional()
   user_role: string;
 
   @IsUUID()

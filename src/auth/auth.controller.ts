@@ -13,7 +13,7 @@ export class AuthController {
   signIn(@Body() signInDto: SignInDto) {
     return this.authService.signIn(signInDto.email, signInDto.password);
   }
-
+  // TODO: Delete this method
   @UseGuards(AuthGuard)
   @Get('profile')
   getProfile(@Request() req: any) {

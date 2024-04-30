@@ -12,6 +12,8 @@ import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { UserDto } from './entities/user.dto';
 
+// TODO: Assert tha the user is the only who can modify his own data
+
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -24,6 +26,11 @@ export class UsersController {
   @Get(':id')
   findOne(@Param('id') id: string): Promise<User | null> {
     return this.usersService.findOneById(id);
+  }
+
+  @Post('register')
+  register(@Body() user: UserDto): Promise<{ access_token: string }> {
+    return this.usersService.register(user);
   }
   /*
   @Put(':id')

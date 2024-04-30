@@ -5,6 +5,8 @@ import { User } from './entities/user.entity';
 import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
 import { UserDto } from './entities/user.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 // TODO: Implement exceptions for user HttpException HttpStatus
 // TODO: Implement token
@@ -14,6 +16,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private jwtService: JwtService,
   ) {}
 
   async findAll(): Promise<UserDto[]> {
@@ -46,9 +49,10 @@ export class UsersService {
     });
   }
 
-  async create(userDto: UserDto): Promise<{ message: string }> {
+  async register(userDto: UserDto): Promise<{ access_token: string }> {
+    const id = uuidv4();
     const user = {
-      user_id: uuidv4(),
+      user_id: id,
       user_name: userDto.name,
       user_first_surname: userDto.first_surname,
       user_second_surname: userDto.second_surname,
@@ -56,11 +60,29 @@ export class UsersService {
       user_password: userDto.password,
       user_role: userDto.user_role,
       // User profile id is the same as user id, because it is a 1:1 relationship
-      users_profiles_user_profile_id: userDto.user_id,
+      users_profiles_user_profile_id: id,
     };
-    this.usersRepository.create(user);
-    await this.usersRepository.save(user);
-    return { message: 'User created' };
+    // Check if the user already exists
+    const userExists = await this.findOneByEmail(user.user_email);
+    if (userExists) {
+      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+    }
+    // Set role to student, teacher, company or admin are set by the admin
+    user.user_role = 'student';
+    // Set generic Exeption, because the built-in exception can leak information
+    try {
+      await this.usersRepository.save(user);
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        'Error saving user',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+    const payload = { id: user.user_id, email: user.user_email };
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
   }
 
   async remove(id: string): Promise<void> {

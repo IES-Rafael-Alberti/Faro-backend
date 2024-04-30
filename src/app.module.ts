@@ -7,7 +7,9 @@ import { PublicationsModule } from './modules/publications/publications.module';
 import { DirectMessagesModule } from './modules/direct-messages/direct-messages.module';
 import { ConnectionsModule } from './modules/connections/connections.module';
 import { AuthModule } from './auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
 
+// TODO: Implement logs system
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -25,6 +27,11 @@ import { AuthModule } from './auth/auth.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       // TODO: Remove this line in production
       synchronize: true,
+    }),
+    JwtModule.register({
+      global: true,
+      secret: `${process.env.JWT_KEY}`,
+      signOptions: { expiresIn: '3600s' },
     }),
     UsersModule,
     PublicationsModule,
