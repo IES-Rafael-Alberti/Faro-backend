@@ -10,18 +10,19 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
+import { UserDto } from './entities/user.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  findAll(): Promise<User[]> {
+  findAll(): Promise<UserDto[]> {
     return this.usersService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<User | null> {
+  findOne(@Param('id') id: string): Promise<UserDto | null> {
     return this.usersService.findOne(id);
   }
 
@@ -39,6 +40,7 @@ export class UsersController {
   patch(@Param('id') id: string, @Body() user: User): Promise<void> {
     return this.usersService.patch(id, user);
   }
+  /*
   @Post('login')
   login(@Body() user: User): Promise<User> {
     return this.usersService.login(user);
@@ -48,6 +50,7 @@ export class UsersController {
   register(@Body() user: User): Promise<User> {
     return this.usersService.register(user);
   }
+  */
 }
 
 /*

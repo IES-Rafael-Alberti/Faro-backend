@@ -37,6 +37,7 @@ export class ConnectionsController {
     @Param('applicant_id') applicant_id: string,
     @Param('required_id') required_id: string,
   ): Promise<{ message: string }> {
+    // TODO: Check this try/catch block
     try {
       return await this.connectionsService.deleteRequestConnection(
         applicant_id,
@@ -47,15 +48,3 @@ export class ConnectionsController {
     }
   }
 }
-
-/*
-{
-	"user_id": "20e7b93a-8aa7-4ddf-859d-206a32cca6c2",
-	"connected_user_id": "05d9538d-64f5-4ad0-a59d-be31a58ed506"
-}
-
-{
-	"user_id": "05d9538d-64f5-4ad0-a59d-be31a58ed506",
-	"connected_user_id": "20e7b93a-8aa7-4ddf-859d-206a32cca6c2"
-}
-*/
