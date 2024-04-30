@@ -33,10 +33,16 @@ export class UsersService {
     });
   }
 
-  findOne(id: string): Promise<User | null> {
+  findOneById(id: string): Promise<User | null> {
     // TODO: Implement exceptions for user HttpException HttpStatus
     return this.usersRepository.findOne({
       where: { user_id: id } as FindOptionsWhere<User>,
+    });
+  }
+
+  findOneByEmail(email: string): Promise<User | null> {
+    return this.usersRepository.findOne({
+      where: { user_email: email } as FindOptionsWhere<User>,
     });
   }
 

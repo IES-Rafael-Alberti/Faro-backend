@@ -49,8 +49,8 @@ export class ConnectionsService {
     required_id: string,
   ): Promise<{ message: string }> {
     // Assert that the applicant and required exist
-    const applicant = await this.usersService.findOne(applicant_id);
-    const required = await this.usersService.findOne(required_id);
+    const applicant = await this.usersService.findOneById(applicant_id);
+    const required = await this.usersService.findOneById(required_id);
     if (!applicant || !required) {
       throw new HttpException(
         'Applicant or required not found',

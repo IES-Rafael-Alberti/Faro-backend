@@ -39,7 +39,7 @@ export class PublicationsService {
   ): Promise<CreatePublicationDto> {
     const { msg, user_id } = createPublicationDto;
     // Assert the user exists
-    const user = await this.usersService.findOne(user_id);
+    const user = await this.usersService.findOneById(user_id);
     if (!user) {
       throw new HttpException('The user does not exist', HttpStatus.NOT_FOUND);
     }
@@ -82,7 +82,7 @@ export class PublicationsService {
 
   async findAllFromUser(user_id: string): Promise<CreatePublicationDto[]> {
     // Assert the user exists
-    const user = await this.usersService.findOne(user_id);
+    const user = await this.usersService.findOneById(user_id);
     if (!user) {
       throw new HttpException('The user does not exist', HttpStatus.NOT_FOUND);
     }

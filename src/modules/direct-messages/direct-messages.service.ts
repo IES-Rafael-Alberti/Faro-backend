@@ -19,8 +19,8 @@ export class DirectMessagesService {
     receiver_id: string,
   ): Promise<CreateDirectMessageDto[]> {
     // Assert that the sender and receiver exist
-    const sender = await this.usersService.findOne(sender_id);
-    const receiver = await this.usersService.findOne(receiver_id);
+    const sender = await this.usersService.findOneById(sender_id);
+    const receiver = await this.usersService.findOneById(receiver_id);
     if (!sender || !receiver) {
       throw new HttpException(
         'Sender or receiver not found',
@@ -65,8 +65,8 @@ export class DirectMessagesService {
   ): Promise<CreateDirectMessageDto> {
     const { sender_id, receiver_id } = createDirectMessageDto;
     // Assert that the sender and receiver exist
-    const sender = await this.usersService.findOne(sender_id);
-    const receiver = await this.usersService.findOne(receiver_id);
+    const sender = await this.usersService.findOneById(sender_id);
+    const receiver = await this.usersService.findOneById(receiver_id);
     if (!sender || !receiver) {
       throw new HttpException(
         'Sender or receiver not found',

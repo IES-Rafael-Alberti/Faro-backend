@@ -6,6 +6,7 @@ import { UsersModule } from './modules/users/users.module';
 import { PublicationsModule } from './modules/publications/publications.module';
 import { DirectMessagesModule } from './modules/direct-messages/direct-messages.module';
 import { ConnectionsModule } from './modules/connections/connections.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ConnectionsModule } from './modules/connections/connections.module';
     PublicationsModule,
     DirectMessagesModule,
     ConnectionsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [],
