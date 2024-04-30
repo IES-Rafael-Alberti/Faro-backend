@@ -44,3 +44,5 @@ dev.env
 /docker
 /db_model/faro db model.mwb.bak
 /db_model/init.sql
+
+src/auth/constants.ts
