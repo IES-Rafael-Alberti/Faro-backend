@@ -30,7 +30,7 @@ export class UserDto {
   email: string;
 
   @IsString()
-  @Length(1, 60)
+  @Length(8, 60)
   password: string;
 
   @IsEnum(['admin', 'teacher', 'company', 'student'])

@@ -7,6 +7,7 @@ import { UserDto } from './entities/user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { hash } from 'bcrypt';
 
 // TODO: Implement exceptions for user HttpException HttpStatus
 // TODO: Implement token
@@ -57,7 +58,7 @@ export class UsersService {
       user_first_surname: userDto.first_surname,
       user_second_surname: userDto.second_surname,
       user_email: userDto.email,
-      user_password: userDto.password,
+      user_password: await hash(userDto.password, 10),
       user_role: userDto.user_role,
       // User profile id is the same as user id, because it is a 1:1 relationship
       users_profiles_user_profile_id: id,
@@ -73,7 +74,6 @@ export class UsersService {
     try {
       await this.usersRepository.save(user);
     } catch (error) {
-      console.log(error);
       throw new HttpException(
         'Error saving user',
         HttpStatus.INTERNAL_SERVER_ERROR,
