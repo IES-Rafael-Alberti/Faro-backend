@@ -33,24 +33,11 @@ export class UsersService {
     });
   }
 
-  async findOne(id: string): Promise<UserDto | null> {
-    const user = await this.usersRepository.findOne({
+  findOne(id: string): Promise<User | null> {
+    // TODO: Implement exceptions for user HttpException HttpStatus
+    return this.usersRepository.findOne({
       where: { user_id: id } as FindOptionsWhere<User>,
     });
-    if (!user) {
-      return null;
-    }
-    const userDto = {
-      user_id: user.user_id,
-      name: user.user_name,
-      first_surname: user.user_first_surname,
-      second_surname: user.user_second_surname,
-      email: user.user_email,
-      password: user.user_password,
-      user_role: user.user_role,
-      users_profiles_user_profile_id: user.users_profiles_user_profile_id,
-    };
-    return userDto;
   }
 
   async create(userDto: UserDto): Promise<{ message: string }> {
