@@ -6,7 +6,6 @@ import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
 import * as bcrypt from 'bcrypt';
 
 // TODO: Implement exceptions for user HttpException HttpStatus
-// TODO: Implement token
 
 @Injectable()
 export class UsersService {

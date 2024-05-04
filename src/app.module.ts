@@ -6,6 +6,7 @@ import { UsersModule } from './modules/users/users.module';
 import { PublicationsModule } from './modules/publications/publications.module';
 import { DirectMessagesModule } from './modules/direct-messages/direct-messages.module';
 import { ConnectionsModule } from './modules/connections/connections.module';
+import { ProfileModule } from './modules/profile/profile.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ConnectionsModule } from './modules/connections/connections.module';
       synchronize: true,
     }),
     UsersModule,
+    ProfileModule,
     PublicationsModule,
     DirectMessagesModule,
     ConnectionsModule,
