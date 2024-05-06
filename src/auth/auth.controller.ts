@@ -4,7 +4,8 @@ import { SignInDto } from './validations/signIn.validator';
 import { UserDto } from 'src/modules/users/entities/user.dto';
 import { UseGuards } from '@nestjs/common';
 import { Get } from '@nestjs/common';
-import { AuthGuard } from './auth.guard';
+import { AuthGuard } from './guards/auth.guard';
+import { UserImpersonationProtectionGuard } from './guards/user-impersonation-protection.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -16,9 +17,10 @@ export class AuthController {
     return this.authService.signIn(signInDto.email, signInDto.password);
   }
 
-  // Add a new endpoint profile with a guard to protect it
+  // Test endpoint
   @UseGuards(AuthGuard)
-  @Get('profile')
+  @UseGuards(UserImpersonationProtectionGuard)
+  @Get('profile/:user_id')
   profile() {
     return 'Ta bien';
   }
