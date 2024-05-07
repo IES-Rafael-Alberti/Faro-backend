@@ -43,6 +43,3 @@ export class PublicationsController {
     return this.publicationsService.findAllFromUser(id);
   }
 }
-
-// 1261c8a7-ffa8-4998-b954-7d0146b8020d
-// f9f72caf-ae8c-4aeb-bc6f-c35046a45755

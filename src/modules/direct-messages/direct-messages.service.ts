@@ -63,6 +63,7 @@ export class DirectMessagesService {
   async create(
     createDirectMessageDto: CreateDirectMessageDto,
   ): Promise<CreateDirectMessageDto> {
+    // TODO: Validate the sender and receiver are connected
     const { sender_id, receiver_id } = createDirectMessageDto;
     // Assert that the sender and receiver exist
     const sender = await this.usersService.findOneById(sender_id);
