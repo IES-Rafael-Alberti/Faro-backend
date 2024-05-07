@@ -5,7 +5,7 @@ import { UserDto } from 'src/modules/users/entities/user.dto';
 import { UseGuards } from '@nestjs/common';
 import { Get } from '@nestjs/common';
 import { AuthGuard } from './guards/auth.guard';
-import { UserImpersonationProtectionGuard } from './guards/user-impersonation-protection.guard';
+import { UserImpersonationProtectionGuard } from './guards/UserImpersonationProtectionGuard.guard';
 
 @Controller('auth')
 export class AuthController {

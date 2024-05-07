@@ -8,8 +8,10 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 
 @Injectable()
-export class UserImpersonationProtectionGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
+export abstract class BaseImpersonationProtectionGuard implements CanActivate {
+  constructor(protected jwtService: JwtService) {}
+
+  abstract fieldsToCheck: string[];
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -21,13 +23,11 @@ export class UserImpersonationProtectionGuard implements CanActivate {
       const userSesion = await this.jwtService.verifyAsync(token, {
         secret: `${process.env.JWT_KEY}`,
       });
-      // Assert that the user can only access its own data
-      const fieldsToCheck = ['id', 'user_id'];
       let validRequest;
       const httpVerb = request.method;
       if (httpVerb === 'GET' || httpVerb === 'DELETE') {
         validRequest = this.checkParametersFromURL(
-          fieldsToCheck,
+          this.fieldsToCheck,
           request,
           userSesion,
         );
@@ -37,7 +37,7 @@ export class UserImpersonationProtectionGuard implements CanActivate {
         httpVerb === 'PATCH'
       ) {
         validRequest = this.checkParametersFromBody(
-          fieldsToCheck,
+          this.fieldsToCheck,
           request,
           userSesion,
         );
@@ -52,12 +52,12 @@ export class UserImpersonationProtectionGuard implements CanActivate {
     return true;
   }
 
-  private extractTokenFromHeader(request: Request): string | undefined {
+  protected extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }
 
-  private checkParametersFromURL(
+  protected checkParametersFromURL(
     fieldsToCheck: string[],
     request: Request,
     userSesion: any,
@@ -75,7 +75,7 @@ export class UserImpersonationProtectionGuard implements CanActivate {
     return valid;
   }
 
-  private checkParametersFromBody(
+  protected checkParametersFromBody(
     fieldsToCheck: string[],
     request: Request,
     userSesion: any,
