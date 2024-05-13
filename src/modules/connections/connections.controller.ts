@@ -5,16 +5,18 @@ import {
   Delete,
   Param,
   Body,
-  HttpException,
-  HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { ConnectionsService } from './connections.service';
 import { CreateConnectionDto } from './entities/connections.dto';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { ConnectionImpersonationProtectionGuard } from 'src/auth/guards/ConnectionImpersonationProtectionGuard.guard';
 
 @Controller('connections')
 export class ConnectionsController {
   constructor(private readonly connectionsService: ConnectionsService) {}
 
+  @UseGuards(AuthGuard)
   @Get(':user_id')
   async getAllConnectionsFromUser(
     @Param('user_id') user_id: string,
@@ -22,6 +24,8 @@ export class ConnectionsController {
     return await this.connectionsService.getAllConnectionsFromUser(user_id);
   }
 
+  @UseGuards(AuthGuard)
+  @UseGuards(ConnectionImpersonationProtectionGuard)
   @Post('request')
   async requestConnection(
     @Body() requestConnectionDto: CreateConnectionDto,
@@ -32,19 +36,29 @@ export class ConnectionsController {
     );
   }
 
+  @UseGuards(AuthGuard)
+  @UseGuards(ConnectionImpersonationProtectionGuard)
   @Delete('request/:applicant_id/:required_id')
   async deleteRequestConnection(
     @Param('applicant_id') applicant_id: string,
     @Param('required_id') required_id: string,
   ): Promise<{ message: string }> {
-    // TODO: Check this try/catch block
-    try {
-      return await this.connectionsService.deleteRequestConnection(
-        applicant_id,
-        required_id,
-      );
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
+    return await this.connectionsService.deleteRequestConnection(
+      applicant_id,
+      required_id,
+    );
+  }
+
+  @UseGuards(AuthGuard)
+  @UseGuards(ConnectionImpersonationProtectionGuard)
+  @Delete(':user_id/:connected_user_id')
+  async deleteConnection(
+    @Param('user_id') user_id: string,
+    @Param('connected_user_id') connected_user_id: string,
+  ): Promise<{ message: string }> {
+    return await this.connectionsService.deleteConnection(
+      user_id,
+      connected_user_id,
+    );
   }
 }

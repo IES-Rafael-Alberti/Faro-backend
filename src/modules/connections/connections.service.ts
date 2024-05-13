@@ -127,4 +127,26 @@ export class ConnectionsService {
     await this.requestConnectionsRepository.delete(requestConnection);
     return { message: 'Connection request deleted successfully' };
   }
+
+  async deleteConnection(
+    user_id: string,
+    connected_user_id: string,
+  ): Promise<{ message: string }> {
+    const possible_connection_1 = await this.connectionsRepository.findOne({
+      where: { user_id, connected_user_id },
+    });
+    const possible_connection_2 = await this.connectionsRepository.findOne({
+      where: { user_id: connected_user_id, connected_user_id: user_id },
+    });
+    if (!possible_connection_1 && !possible_connection_2) {
+      throw new HttpException('Connection not found', HttpStatus.NOT_FOUND);
+    }
+    if (possible_connection_1) {
+      await this.connectionsRepository.delete(possible_connection_1);
+    }
+    if (possible_connection_2) {
+      await this.connectionsRepository.delete(possible_connection_2);
+    }
+    return { message: 'Connection deleted successfully' };
+  }
 }
