@@ -4,9 +4,10 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
 import { UserDto } from './entities/user.dto';
-
-// TODO: Implement exceptions for user HttpException HttpStatus
-// TODO: Implement token
+import { v4 as uuidv4 } from 'uuid';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import { InputUserDto } from './entities/input.user.dto';
+import { hash } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -26,17 +27,35 @@ export class UsersService {
         email: user.user_email,
         password: user.user_password,
         user_role: user.user_role,
-        users_profiles_user_profile_id: user.users_profiles_user_profile_id,
+        profile_id: user.users_profiles_user_profile_id,
       };
       return userDto;
     });
   }
 
   async findOneById(id: string): Promise<User | null> {
-    // TODO: Implement exceptions for user HttpException HttpStatus
     return this.usersRepository.findOne({
       where: { user_id: id } as FindOptionsWhere<User>,
     });
+  }
+
+  async findOneByIdUserDto(id: string): Promise<UserDto | null> {
+    const user = await this.usersRepository.findOne({
+      where: { user_id: id } as FindOptionsWhere<User>,
+    });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return {
+      user_id: user.user_id,
+      name: user.user_name,
+      first_surname: user.user_first_surname,
+      second_surname: user.user_second_surname,
+      email: '',
+      password: '',
+      user_role: user.user_role,
+      profile_id: user.users_profiles_user_profile_id,
+    };
   }
 
   async findOneByEmail(email: string): Promise<User | null> {
@@ -46,7 +65,11 @@ export class UsersService {
   }
 
   async remove(id: string): Promise<void> {
-    await this.usersRepository.delete(id);
+    const user = await this.findOneById(id);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    await this.usersRepository.remove(user);
   }
 
   async save(userDto: UserDto): Promise<User> {
@@ -62,16 +85,42 @@ export class UsersService {
     };
     return this.usersRepository.save(user);
   }
-  /*
-  async update(id: string, userDto: UserDto): Promise<void> {
-    this.usersRepository.create(userDto);
-    await this.usersRepository.update(id, userDto);
+
+  async create(userDto: UserDto): Promise<UserDto> {
+    const id = uuidv4();
+    const user = await this.save(userDto);
+    return {
+      user_id: id,
+      name: user.user_name,
+      first_surname: user.user_first_surname,
+      second_surname: user.user_second_surname,
+      email: user.user_email,
+      password: user.user_password,
+      user_role: user.user_role,
+      profile_id: id,
+    };
   }
-  */
-  /*
-  async patch(id: string, userDto: UserDto): Promise<void> {
-    const user = this.usersRepository.create(userDto);
-    await this.usersRepository.update(id, user);
+
+  async path(userDto: InputUserDto): Promise<UserDto> {
+    const user = await this.usersRepository.findOne({
+      where: { user_id: userDto.user_id } as FindOptionsWhere<User>,
+    });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    if (user.user_password) {
+      userDto.password = await hash(userDto.password, 10);
+    }
+    const updatedUser = await this.save({ ...user, ...userDto });
+    return {
+      user_id: updatedUser.user_id,
+      name: updatedUser.user_name,
+      first_surname: updatedUser.user_first_surname,
+      second_surname: updatedUser.user_second_surname,
+      email: updatedUser.user_email,
+      password: updatedUser.user_password,
+      user_role: updatedUser.user_role,
+      profile_id: updatedUser.users_profiles_user_profile_id,
+    };
   }
-  */
 }

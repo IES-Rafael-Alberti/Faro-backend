@@ -41,7 +41,7 @@ export class AuthService {
       // Set role to student, teacher, company or admin are set by the admin
       user_role: 'student',
       // User profile id is the same as user id, because it is a 1:1 relationship
-      users_profiles_user_profile_id: id,
+      profile_id: id,
     };
     // Check if the user already exists
     const userExists = await this.usersService.findOneByEmail(
