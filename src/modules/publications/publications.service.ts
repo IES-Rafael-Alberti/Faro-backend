@@ -5,6 +5,7 @@ import { Publication } from './entities/publication.entity';
 import { ObjectLiteral } from 'typeorm';
 import { UsersService } from '../users/users.service';
 import { CreatePublicationDto } from './entities/publication.dto';
+import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
 
 @Injectable()
 export class PublicationsService {
@@ -136,5 +137,15 @@ export class PublicationsService {
           return publicationDto;
         }),
       );
+  }
+
+  async countAllFromUser(user_id: string): Promise<number> {
+    // Assert the user exists
+    const user = await this.usersService.findOneById(user_id);
+    if (!user) {
+      throw new HttpException('The user does not exist', HttpStatus.NOT_FOUND);
+    }
+    const where: FindOptionsWhere<any> = { users_user_id: user_id };
+    return this.publicationsRepository.count({ where });
   }
 }

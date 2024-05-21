@@ -46,4 +46,10 @@ export class PublicationsController {
   findAllFromUser(@Param('id') id: string): Promise<CreatePublicationDto[]> {
     return this.publicationsService.findAllFromUser(id);
   }
+
+  @UseGuards(AuthGuard)
+  @Get('user/:id/count')
+  countAllFromUser(@Param('id') id: string): Promise<number> {
+    return this.publicationsService.countAllFromUser(id);
+  }
 }
