@@ -6,9 +6,13 @@ import {
   Body,
   Put,
   Delete,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { Profile } from './entities/profile.entity';
+import { Express } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('profiles')
 export class ProfileController {
@@ -40,5 +44,11 @@ export class ProfileController {
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<void> {
     return await this.profileService.delete(id);
+  }
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    console.log('Uploaded file:', file);
+    return file; // Optionally, return the uploaded file
   }
 }
