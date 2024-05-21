@@ -17,6 +17,7 @@ import { UserImpersonationProtectionGuard } from 'src/auth/guards/UserImpersonat
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  // Make this only for admins
   @UseGuards(AuthGuard)
   @Get()
   findAll(): Promise<UserDto[]> {
