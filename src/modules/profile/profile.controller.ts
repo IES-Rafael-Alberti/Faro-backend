@@ -14,6 +14,7 @@ import { ProfileService } from './profile.service';
 import { Profile } from './entities/profile.entity';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { imageFileFilter } from './fileFilter';
 
 @Controller('profiles')
 export class ProfileController {
@@ -47,7 +48,11 @@ export class ProfileController {
     return await this.profileService.delete(id);
   }
   @Post('upload/:id')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: imageFileFilter,
+    }),
+  )
   async uploadFile(
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
