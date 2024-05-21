@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  NotFoundException,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { Profile } from './entities/profile.entity';
@@ -45,10 +46,22 @@ export class ProfileController {
   async delete(@Param('id') id: string): Promise<void> {
     return await this.profileService.delete(id);
   }
-  @Post('upload')
+  @Post('upload/:id')
   @UseInterceptors(FileInterceptor('file'))
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    console.log('Uploaded file:', file);
-    return file; // Optionally, return the uploaded file
+  async uploadFile(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const profile = await this.profileService.findById(id);
+
+    if (!profile) {
+      throw new NotFoundException('Entity not found');
+    }
+
+    profile.users_profile_profile_picture = file;
+
+    await this.profileService.update(id, profile);
+
+    return profile.users_profile_profile_picture.filename;
   }
 }
