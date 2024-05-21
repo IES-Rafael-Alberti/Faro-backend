@@ -1,6 +1,12 @@
-// profile.controller.ts
-
-import { Controller, Get, Param, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Body,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { Profile } from './entities/profile.entity';
 
@@ -21,5 +27,18 @@ export class ProfileController {
   @Post()
   async create(@Body() profileData: Partial<Profile>): Promise<Profile> {
     return await this.profileService.create(profileData);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() profileData: Partial<Profile>,
+  ): Promise<Profile> {
+    return await this.profileService.update(id, profileData);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string): Promise<void> {
+    return await this.profileService.delete(id);
   }
 }

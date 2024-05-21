@@ -8,6 +8,7 @@ import { DirectMessagesModule } from './modules/direct-messages/direct-messages.
 import { ConnectionsModule } from './modules/connections/connections.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
+import { ProfileModule } from './modules/profile/profile.module';
 
 // TODO: Implement logs system
 @Module({
@@ -38,6 +39,7 @@ import { JwtModule } from '@nestjs/jwt';
     DirectMessagesModule,
     ConnectionsModule,
     AuthModule,
+    ProfileModule,
   ],
   controllers: [AppController],
   providers: [],
