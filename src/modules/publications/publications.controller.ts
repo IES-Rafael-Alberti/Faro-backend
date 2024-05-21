@@ -16,6 +16,7 @@ import { PublicationImpersonationProtectionGuard } from 'src/auth/guards/Publica
 export class PublicationsController {
   constructor(private readonly publicationsService: PublicationsService) {}
 
+  @UseGuards(AuthGuard)
   @Get()
   findAll(): Promise<CreatePublicationDto[]> {
     return this.publicationsService.findAll();
@@ -32,9 +33,12 @@ export class PublicationsController {
 
   @UseGuards(AuthGuard)
   @UseGuards(PublicationImpersonationProtectionGuard)
-  @Delete(':msg_id')
-  remove(@Param('msg_id') id: string): Promise<void> {
-    return this.publicationsService.remove(id);
+  @Delete('user/:user_id/msg/:msg_id')
+  remove(
+    @Param('user_id') user_id: string,
+    @Param('msg_id') msg_id: string,
+  ): Promise<void> {
+    return this.publicationsService.remove(user_id, msg_id);
   }
 
   @UseGuards(AuthGuard)
