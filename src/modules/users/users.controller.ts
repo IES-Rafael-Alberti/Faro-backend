@@ -47,11 +47,12 @@ export class UsersController {
   remove(@Param('id') id: string): Promise<void> {
     return this.usersService.remove(id);
   }
-  // TODO: Change the name of this function
-  @Get('userLanding')
-  async userLanding(@Param('id') id: string): Promise<any> {
+
+  @Get('userBasicInfo/:id')
+  async userBasicInfo(@Param('id') id: string): Promise<any> {
     const user = await this.usersService.findOneByIdUserDto(id);
-    const profile = await this.profileService.findById(id);
+    const profile = await this.usersService.findProfile(id);
+
     if (!user || !profile) {
       throw new NotFoundException('User not found');
     }

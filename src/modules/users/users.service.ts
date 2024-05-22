@@ -8,12 +8,15 @@ import { v4 as uuidv4 } from 'uuid';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { InputUserDto } from './entities/input.user.dto';
 import { hash } from 'bcrypt';
+import { Profile } from '../profile/entities/profile.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @InjectRepository(Profile)
+    private profileRepository: Repository<Profile>,
   ) {}
 
   async findAll(): Promise<UserDto[]> {
@@ -122,5 +125,11 @@ export class UsersService {
       user_role: updatedUser.user_role,
       profile_id: updatedUser.users_profiles_user_profile_id,
     };
+  }
+
+  async findProfile(id: string): Promise<Profile | null> {
+    return this.profileRepository.findOne({
+      where: { id: id } as FindOptionsWhere<Profile>,
+    });
   }
 }
