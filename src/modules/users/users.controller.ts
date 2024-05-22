@@ -52,13 +52,13 @@ export class UsersController {
   async userBasicInfo(@Param('id') id: string): Promise<any> {
     const user = await this.usersService.findOneByIdUserDto(id);
     const profile = await this.usersService.findProfile(id);
-
     if (!user || !profile) {
       throw new NotFoundException('User not found');
     }
+    const base64 = profile.users_profile_profile_picture.toString('base64');
     return {
       username: user.name,
-      profilePicture: profile.users_profile_profile_picture,
+      profile_picture: `data:image/jpeg;base64,${base64}`,
       rol: user.user_role,
     };
   }

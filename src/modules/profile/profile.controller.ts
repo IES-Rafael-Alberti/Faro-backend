@@ -84,7 +84,6 @@ export class ProfileController {
     }
 
     const base64 = profile.users_profile_profile_picture.toString('base64');
-    console.log(base64);
 
     return `data:image/jpeg;base64,${base64}`;
   }

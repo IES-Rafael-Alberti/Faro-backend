@@ -11,7 +11,7 @@ export class Profile {
   @Column({ type: 'mediumblob', nullable: true })
   users_profile_profile_picture: Buffer;
 
-  @Column({ length: 128 })
+  @Column({ length: 128, nullable: true })
   headline: string;
 
   @Column({ length: 512, nullable: true })

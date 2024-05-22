@@ -6,12 +6,14 @@ import { UserDto } from 'src/modules/users/entities/user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { hash } from 'bcrypt';
+import { ProfileService } from 'src/modules/profile/profile.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private profileService: ProfileService,
   ) {}
 
   async signIn(email: string, pass: string): Promise<{ access_token: string }> {
@@ -60,6 +62,7 @@ export class AuthService {
       );
     }
     const payload = { id: userDtoFill.user_id, email: userDtoFill.email };
+    this.profileService.create({ id: id });
     return {
       access_token: await this.jwtService.signAsync(payload),
     };

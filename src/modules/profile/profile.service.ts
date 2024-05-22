@@ -54,8 +54,6 @@ export class ProfileService {
 
     // Save the file buffer directly to the profilePicture field
     profile.users_profile_profile_picture = file.buffer;
-    console.log(file.buffer);
-
     return await this.profileRepository.save(profile);
   }
 }
