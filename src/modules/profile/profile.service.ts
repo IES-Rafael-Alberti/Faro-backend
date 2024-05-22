@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Profile } from './entities/profile.entity';
+import { Express } from 'express';
 
 @Injectable()
 export class ProfileService {
@@ -28,15 +29,33 @@ export class ProfileService {
   }
 
   async update(id: string, profileData: Partial<Profile>): Promise<Profile> {
-    await this.findById(id); // Ensure the profile exists
     await this.profileRepository.update(id, profileData);
-    return this.findById(id);
+    const updatedProfile = await this.profileRepository.findOne({
+      where: { id },
+    });
+    if (!updatedProfile) {
+      throw new NotFoundException(`Profile with ID ${id} not found`);
+    }
+    return updatedProfile;
   }
 
   async delete(id: string): Promise<void> {
-    const result = await this.profileRepository.delete(id);
-    if (result.affected === 0) {
+    await this.profileRepository.delete(id);
+  }
+
+  async updateProfilePicture(
+    id: string,
+    file: Express.Multer.File,
+  ): Promise<Profile> {
+    const profile = await this.profileRepository.findOne({ where: { id } });
+    if (!profile) {
       throw new NotFoundException(`Profile with ID ${id} not found`);
     }
+
+    // Save the file buffer directly to the profilePicture field
+    profile.users_profile_profile_picture = file.buffer;
+    console.log(file.buffer);
+
+    return await this.profileRepository.save(profile);
   }
 }

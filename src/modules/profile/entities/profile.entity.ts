@@ -8,8 +8,8 @@ export class Profile {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'json', nullable: true })
-  users_profile_profile_picture: Express.Multer.File;
+  @Column({ type: 'mediumblob', nullable: true })
+  users_profile_profile_picture: Buffer;
 
   @Column({ length: 128 })
   headline: string;
