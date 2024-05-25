@@ -14,24 +14,40 @@ export class PublicationsService {
     private usersService: UsersService,
   ) {}
 
-  async findAll(): Promise<CreatePublicationDto[]> {
-    return this.publicationsRepository.find().then((publications) =>
-      publications.map((publication) => {
-        const {
-          user_publication_id,
-          user_publication_msg,
-          users_publications_created_at,
-          users_user_id,
-        } = publication;
-        const publicationDto: CreatePublicationDto = {
-          id: user_publication_id,
-          msg: user_publication_msg,
-          created_at: users_publications_created_at,
-          user_id: users_user_id,
-        };
-        return publicationDto;
-      }),
-    );
+  async findAll(
+    page = 1,
+    limit = 16,
+  ): Promise<{
+    data: CreatePublicationDto[];
+    currentPage: number;
+    totalPages: number;
+  }> {
+    const [result, total] = await this.publicationsRepository.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    const data = result.map((publication) => {
+      const {
+        user_publication_id,
+        user_publication_msg,
+        users_publications_created_at,
+        users_user_id,
+      } = publication;
+      const publicationDto: CreatePublicationDto = {
+        id: user_publication_id,
+        msg: user_publication_msg,
+        created_at: users_publications_created_at,
+        user_id: users_user_id,
+      };
+      return publicationDto;
+    });
+
+    return {
+      data,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async create(

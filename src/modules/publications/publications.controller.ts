@@ -17,7 +17,11 @@ export class PublicationsController {
   constructor(private readonly publicationsService: PublicationsService) {}
 
   @Get()
-  findAll(): Promise<CreatePublicationDto[]> {
+  findAll(): Promise<{
+    data: CreatePublicationDto[];
+    currentPage: number;
+    totalPages: number;
+  }> {
     return this.publicationsService.findAll();
   }
 
