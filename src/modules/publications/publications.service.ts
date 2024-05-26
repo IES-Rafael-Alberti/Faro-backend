@@ -28,7 +28,11 @@ export class PublicationsService {
       take: limit,
     });
 
-    const data = result.map((publication) => {
+    const data = result.map(async (publication) => {
+      const user = await this.usersService.findOneById(
+        publication.users_user_id,
+      );
+
       const {
         user_publication_id,
         user_publication_msg,
@@ -40,12 +44,14 @@ export class PublicationsService {
         msg: user_publication_msg,
         created_at: users_publications_created_at,
         user_id: users_user_id,
+        name: `${user?.user_name} ${user?.user_first_surname}`,
+        user_role: `${user?.user_role}`,
       };
       return publicationDto;
     });
 
     return {
-      data,
+      data: await Promise.all(data),
       currentPage: page,
       totalPages: Math.ceil(total / limit),
     };
