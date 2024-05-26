@@ -54,6 +54,6 @@ export class PublicationsController {
   @UseGuards(AuthGuard)
   @Get('user/:id/count')
   countAllFromUser(@Param('id') id: string): Promise<number> {
-    return this.publicationsService.countAllFromUser(id);
+    return this.publicationsService.countAllPublicationsFromUser(id);
   }
 }

@@ -148,7 +148,7 @@ export class PublicationsService {
       );
   }
 
-  async countAllFromUser(user_id: string): Promise<number> {
+  async countAllPublicationsFromUser(user_id: string): Promise<number> {
     // Assert the user exists
     const user = await this.usersService.findOneById(user_id);
     if (!user) {
