@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, IsUUID, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsUUID,
+  IsOptional,
+  IsEnum,
+} from 'class-validator';
 
 export class CreatePublicationDto {
   id: string;
@@ -14,4 +20,12 @@ export class CreatePublicationDto {
   @IsUUID()
   @IsNotEmpty()
   user_id: string;
+
+  @IsString()
+  @IsOptional()
+  name: string;
+
+  @IsEnum(['admin', 'teacher', 'company', 'student'])
+  @IsOptional()
+  user_role: string;
 }
