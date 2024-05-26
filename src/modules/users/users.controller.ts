@@ -56,10 +56,13 @@ export class UsersController {
     if (!user || !profile) {
       throw new NotFoundException('User not found');
     }
-    const base64 = profile.users_profile_profile_picture.toString('base64');
+    let base64 = '';
+    if (profile.users_profile_profile_picture) {
+      base64 = profile.users_profile_profile_picture.toString('base64');
+    }
     return {
       username: user.name,
-      profile_picture: `data:image/jpeg;base64,${base64}`,
+      profile_picture: base64 ? `data:image/jpeg;base64,${base64}` : '',
       rol: user.user_role,
     };
   }
