@@ -23,6 +23,10 @@ export class PublicationsService {
     currentPage: number;
     totalPages: number;
   }> {
+    if (page < 1) {
+      page = 1;
+    }
+
     const [result, total] = await this.publicationsRepository.findAndCount({
       skip: (page - 1) * limit,
       take: limit,

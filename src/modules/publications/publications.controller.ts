@@ -17,13 +17,13 @@ export class PublicationsController {
   constructor(private readonly publicationsService: PublicationsService) {}
 
   @UseGuards(AuthGuard)
-  @Get()
-  findAll(): Promise<{
+  @Get('/:limit')
+  findAll(@Param('limit') limit: number): Promise<{
     data: CreatePublicationDto[];
     currentPage: number;
     totalPages: number;
   }> {
-    return this.publicationsService.findAll();
+    return this.publicationsService.findAll(limit);
   }
 
   @UseGuards(AuthGuard)
