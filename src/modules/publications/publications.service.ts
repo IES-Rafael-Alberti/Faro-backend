@@ -27,11 +27,16 @@ export class PublicationsService {
       page = 1;
     }
 
+    // Get the publications reversed by date
     const [result, total] = await this.publicationsRepository.findAndCount({
       skip: (page - 1) * limit,
       take: limit,
+      order: {
+        users_publications_created_at: 'DESC',
+      },
     });
 
+    // Get the user for each publication
     const data = result.map(async (publication) => {
       const user = await this.usersService.findOneById(
         publication.users_user_id,
@@ -127,9 +132,11 @@ export class PublicationsService {
     }
     const name = `${user.user_name} ${user.user_first_surname}`;
     const user_role = user.user_role;
+    // Get the publications reversed by date
     return this.publicationsRepository
       .find({
         where: { users_user_id: user_id } as ObjectLiteral,
+        order: { users_publications_created_at: 'DESC' },
       })
       .then((publications) =>
         publications.map((publication) => {
