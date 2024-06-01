@@ -27,8 +27,8 @@ export class UsersService {
         name: user.user_name,
         first_surname: user.user_first_surname,
         second_surname: user.user_second_surname,
-        email: user.user_email,
-        password: user.user_password,
+        email: '',
+        password: '',
         user_role: user.user_role,
         profile_id: user.users_profiles_user_profile_id,
       };
