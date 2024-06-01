@@ -111,7 +111,7 @@ export class UsersService {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-    if (user.user_password) {
+    if (userDto.password) {
       userDto.password = await hash(userDto.password, 10);
     }
     userDto.user_role = 'student';
