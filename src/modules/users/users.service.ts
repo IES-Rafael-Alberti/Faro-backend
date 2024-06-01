@@ -114,14 +114,15 @@ export class UsersService {
     if (user.user_password) {
       userDto.password = await hash(userDto.password, 10);
     }
+    userDto.user_role = 'student';
     const updatedUser = await this.save({ ...user, ...userDto });
     return {
       user_id: updatedUser.user_id,
       name: updatedUser.user_name,
       first_surname: updatedUser.user_first_surname,
       second_surname: updatedUser.user_second_surname,
-      email: updatedUser.user_email,
-      password: updatedUser.user_password,
+      email: '',
+      password: '',
       user_role: updatedUser.user_role,
       profile_id: updatedUser.users_profiles_user_profile_id,
     };

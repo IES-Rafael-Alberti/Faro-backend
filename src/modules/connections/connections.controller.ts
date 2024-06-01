@@ -67,6 +67,6 @@ export class ConnectionsController {
   async countConnectionsFromUser(
     @Param('user_id') user_id: string,
   ): Promise<number> {
-    return await this.connectionsService.countConnectionsFromUser(user_id);
+    return await this.connectionsService.countAllConnectionsFromUser(user_id);
   }
 }
