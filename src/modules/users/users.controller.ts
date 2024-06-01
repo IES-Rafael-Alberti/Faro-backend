@@ -63,7 +63,7 @@ export class UsersController {
       base64 = profile.users_profile_profile_picture.toString('base64');
     }
     return {
-      username: user.name,
+      username: user.name + ' ' + user.first_surname,
       profile_picture: base64 ? `data:image/jpeg;base64,${base64}` : '',
       rol: user.user_role,
       count_of_publications:
