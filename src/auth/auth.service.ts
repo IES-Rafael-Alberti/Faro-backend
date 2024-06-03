@@ -16,7 +16,10 @@ export class AuthService {
     private profileService: ProfileService,
   ) {}
 
-  async signIn(email: string, pass: string): Promise<{ access_token: string }> {
+  async signIn(
+    email: string,
+    pass: string,
+  ): Promise<{ id: string; access_token: string }> {
     const user = await this.usersService.findOneByEmail(email);
     if (!user) {
       throw new UnauthorizedException();
@@ -27,11 +30,14 @@ export class AuthService {
     }
     const payload = { id: user.user_id, email: user.user_email };
     return {
+      id: user.user_id,
       access_token: await this.jwtService.signAsync(payload),
     };
   }
 
-  async register(userDto: UserDto): Promise<{ access_token: string }> {
+  async register(
+    userDto: UserDto,
+  ): Promise<{ id: string; access_token: string }> {
     const id = uuidv4();
     const userDtoFill = {
       user_id: id,
@@ -64,6 +70,7 @@ export class AuthService {
     const payload = { id: userDtoFill.user_id, email: userDtoFill.email };
     this.profileService.create({ id: id });
     return {
+      id: id,
       access_token: await this.jwtService.signAsync(payload),
     };
   }
