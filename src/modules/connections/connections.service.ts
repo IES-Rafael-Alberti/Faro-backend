@@ -149,4 +149,14 @@ export class ConnectionsService {
     }
     return { message: 'Connection deleted successfully' };
   }
+
+  async countConnectionsFromUser(user_id: string): Promise<number> {
+    const connections = await this.connectionsRepository
+      .createQueryBuilder('connection')
+      .where('connection.user_id = :user_id', { user_id })
+      .orWhere('connection.connected_user_id = :user_id', { user_id })
+      .getMany();
+
+    return connections.length;
+  }
 }

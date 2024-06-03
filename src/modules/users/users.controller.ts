@@ -22,6 +22,7 @@ export class UsersController {
     private readonly profileService: ProfileService,
   ) {}
 
+  // Make this route only for admins
   @UseGuards(AuthGuard)
   @Get()
   findAll(): Promise<UserDto[]> {

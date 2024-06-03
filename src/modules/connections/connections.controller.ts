@@ -61,4 +61,12 @@ export class ConnectionsController {
       connected_user_id,
     );
   }
+
+  @UseGuards(AuthGuard)
+  @Get('count/:user_id')
+  async countConnectionsFromUser(
+    @Param('user_id') user_id: string,
+  ): Promise<number> {
+    return await this.connectionsService.countConnectionsFromUser(user_id);
+  }
 }
