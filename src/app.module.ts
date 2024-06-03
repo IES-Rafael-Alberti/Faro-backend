@@ -9,6 +9,9 @@ import { ConnectionsModule } from './modules/connections/connections.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ProfileModule } from './modules/profile/profile.module';
+import { EducationModule } from './modules/profile/education/education.module';
+import { RecommendationModule } from './modules/profile/recommendation/recommendation.module';
+import { ExperienceModule } from './modules/profile/experience/experience.module';
 
 // TODO: Implement logs system
 @Module({
@@ -40,6 +43,9 @@ import { ProfileModule } from './modules/profile/profile.module';
     ConnectionsModule,
     AuthModule,
     ProfileModule,
+    EducationModule,
+    RecommendationModule,
+    ExperienceModule,
   ],
   controllers: [AppController],
   providers: [],
