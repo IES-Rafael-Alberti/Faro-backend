@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Profile } from './profile.entity';
+import { Profile } from '../../entities/profile.entity';
 
 @Entity()
 export class Education {

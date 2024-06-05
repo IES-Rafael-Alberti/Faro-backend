@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Profile } from './entities/profile.entity';
-import { Express } from 'express';
 
 @Injectable()
 export class ProfileService {
@@ -17,6 +16,7 @@ export class ProfileService {
 
   async findById(id: string): Promise<Profile> {
     const profile = await this.profileRepository.findOne({ where: { id } });
+
     if (!profile) {
       throw new NotFoundException(`Profile with ID ${id} not found`);
     }

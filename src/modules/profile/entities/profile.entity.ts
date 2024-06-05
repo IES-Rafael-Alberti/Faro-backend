@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Recommendation } from './recommendation.entity';
-import { Experience } from './experience.entity';
-import { Education } from './education.entity';
+import { Recommendation } from '../recommendation/entity/recommendation.entity';
+import { Experience } from '../experience/entity/experience.entity';
+import { Education } from '../education/entity/education.entity';
 
 @Entity()
 export class Profile {
