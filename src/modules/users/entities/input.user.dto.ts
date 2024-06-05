@@ -7,6 +7,7 @@ import {
   IsUUID,
 } from 'class-validator';
 
+// TODO: Set a better name for the request Class dto
 export class InputUserDto {
   @IsUUID()
   @IsOptional()
