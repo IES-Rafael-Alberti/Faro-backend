@@ -204,7 +204,7 @@ CREATE TABLE IF NOT EXISTS `faro`.`comments` (
   `user_id` BINARY(16) NOT NULL,
   `comment` VARCHAR(1024) NOT NULL,
   `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`, `publication_id`, `user_id`),
   CONSTRAINT `fk_comments_publications`
     FOREIGN KEY (`publication_id`)
     REFERENCES `faro`.`publications` (`id`)
