@@ -15,8 +15,11 @@ export class ExperienceService {
     return this.experienceRepository.save(experience);
   }
 
-  findAll(): Promise<Experience[]> {
-    return this.experienceRepository.find();
+  async findAllByProfileId(profileId: string): Promise<Experience[]> {
+    return this.experienceRepository.find({
+      where: { profile: { id: profileId } },
+      relations: ['profile'],
+    });
   }
 
   findOne(id: string): Promise<Experience | null> {

@@ -15,8 +15,11 @@ export class EducationService {
     return this.educationRepository.save(education);
   }
 
-  findAll(): Promise<Education[]> {
-    return this.educationRepository.find();
+  async findAllByProfileId(profileId: string): Promise<Education[]> {
+    return this.educationRepository.find({
+      where: { profile: { id: profileId } },
+      relations: ['profile'],
+    });
   }
 
   findOne(id: string): Promise<Education | null> {

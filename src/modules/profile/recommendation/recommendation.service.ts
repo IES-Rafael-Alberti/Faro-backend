@@ -33,8 +33,11 @@ export class RecommendationService {
     return this.recommendationRepository.save(recommendation);
   }
 
-  findAll(): Promise<Recommendation[]> {
-    return this.recommendationRepository.find();
+  async findAllByProfileId(profileId: string): Promise<Recommendation[]> {
+    return this.recommendationRepository.find({
+      where: { profile: { id: profileId } },
+      relations: ['profile'],
+    });
   }
 
   findOne(id: string): Promise<Recommendation | null> {
