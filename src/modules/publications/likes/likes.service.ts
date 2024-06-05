@@ -60,4 +60,10 @@ export class LikesService {
     }
     await this.likesRepository.remove(like);
   }
+
+  async countLikesByPublicationId(publication_id: string): Promise<number> {
+    return this.likesRepository.count({
+      where: { publication_id } as FindOptionsWhere<Like>,
+    });
+  }
 }

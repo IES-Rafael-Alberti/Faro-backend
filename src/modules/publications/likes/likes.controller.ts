@@ -53,4 +53,12 @@ export class LikesController {
       throw new HttpException(error.message, error.status);
     }
   }
+
+  @UseGuards(AuthGuard)
+  @Get('count/:publication_id')
+  async countLikesByPublicationId(
+    @Param('publication_id') publication_id: string,
+  ): Promise<number> {
+    return await this.likesService.countLikesByPublicationId(publication_id);
+  }
 }
