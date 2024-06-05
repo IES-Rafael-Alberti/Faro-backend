@@ -12,6 +12,7 @@ import { ProfileModule } from './modules/profile/profile.module';
 import { EducationModule } from './modules/profile/education/education.module';
 import { RecommendationModule } from './modules/profile/recommendation/recommendation.module';
 import { ExperienceModule } from './modules/profile/experience/experience.module';
+import { LikesModule } from './modules/publications/likes/likes.module';
 
 // TODO: Implement logs system
 @Module({
@@ -46,6 +47,7 @@ import { ExperienceModule } from './modules/profile/experience/experience.module
     EducationModule,
     RecommendationModule,
     ExperienceModule,
+    LikesModule,
   ],
   controllers: [AppController],
   providers: [],
