@@ -34,10 +34,10 @@ export class RecommendationController {
   }
 
   @UseGuards(AuthGuard)
-  @Get()
-  findAll(): Promise<Recommendation[]> {
+  @Get('profile/:id')
+  findAll(@Param(':id') id: string): Promise<Recommendation[]> {
     return this.recommendationService
-      .findAll()
+      .findAllByProfileId(id)
       .then((result) => {
         return result;
       })
