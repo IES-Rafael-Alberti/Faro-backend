@@ -10,6 +10,29 @@ CREATE SCHEMA IF NOT EXISTS `faro` ;
 USE `faro` ;
 
 -- -----------------------------------------------------
+-- Table `faro`.`users`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `faro`.`users` ;
+CREATE TABLE IF NOT EXISTS `faro`.`users` (
+  `id` BINARY(16) NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  `first_surname` VARCHAR(45) NOT NULL,
+  `second_surname` VARCHAR(45) NULL,
+  `email` VARCHAR(254) NOT NULL,
+  `password` VARCHAR(60) NOT NULL,
+  `role` ENUM('admin', 'teacher', 'company', 'student') NOT NULL,
+  `users_profiles_user_profile_id` BINARY(16) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
+  INDEX `fk_users_profiles_idx` (`users_profiles_user_profile_id` ASC) VISIBLE,
+  CONSTRAINT `fk_users_profiles`
+    FOREIGN KEY (`users_profiles_user_profile_id`)
+    REFERENCES `faro`.`profiles` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
+
+-- -----------------------------------------------------
 -- Table `faro`.`profiles`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `faro`.`profile` ;
@@ -38,31 +61,6 @@ CREATE TABLE IF NOT EXISTS `faro`.`profile` (
     REFERENCES `faro`.`experience` (`id`)
     ON DELETE SET NULL
     ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table `faro`.`users`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `faro`.`users` ;
-CREATE TABLE IF NOT EXISTS `faro`.`users` (
-  `id` BINARY(16) NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
-  `first_surname` VARCHAR(45) NOT NULL,
-  `second_surname` VARCHAR(45) NULL,
-  `email` VARCHAR(254) NOT NULL,
-  `password` VARCHAR(60) NOT NULL,
-  `role` ENUM('admin', 'teacher', 'company', 'student') NOT NULL,
-  `users_profiles_user_profile_id` BINARY(16) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
-  INDEX `fk_users_profiles_idx` (`users_profiles_user_profile_id` ASC) VISIBLE,
-  CONSTRAINT `fk_users_profiles`
-    FOREIGN KEY (`users_profiles_user_profile_id`)
-    REFERENCES `faro`.`profiles` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-
 );
 
 -- -----------------------------------------------------
@@ -176,7 +174,6 @@ CREATE TABLE IF NOT EXISTS `faro`.`recommendations` (
     ON UPDATE CASCADE
 );
 
-
 -- -----------------------------------------------------
 -- Table `faro`.`experience`
 -- -----------------------------------------------------
@@ -193,6 +190,50 @@ CREATE TABLE IF NOT EXISTS `faro`.`experience` (
   CONSTRAINT `fk_experience_profiles`
     FOREIGN KEY (`profile_id`)
     REFERENCES `faro`.`profiles` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+-- -----------------------------------------------------
+-- Table `faro`.`comments`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `faro`.`comments` ;
+CREATE TABLE IF NOT EXISTS `faro`.`comments` (
+  `id` BINARY(16) NOT NULL,
+  `publication_id` BINARY(16) NOT NULL,
+  `user_id` BINARY(16) NOT NULL,
+  `comment` VARCHAR(1024) NOT NULL,
+  `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_comments_publications`
+    FOREIGN KEY (`publication_id`)
+    REFERENCES `faro`.`publications` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_comments_users`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `faro`.`users` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+-- -----------------------------------------------------
+-- Table `faro`.`likes`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `faro`.`likes` ;
+CREATE TABLE IF NOT EXISTS `faro`.`likes` (
+  `user_id` BINARY(16) NOT NULL,
+  `publication_id` BINARY(16) NOT NULL,
+  `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`, `publication_id`),
+  CONSTRAINT `fk_likes_publications`
+    FOREIGN KEY (`publication_id`)
+    REFERENCES `faro`.`publications` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_likes_users`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `faro`.`users` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
