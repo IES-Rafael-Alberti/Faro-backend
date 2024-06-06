@@ -8,6 +8,7 @@ export class Profile {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  // Use appropriate column types and lengths
   @Column({ type: 'mediumblob', nullable: true })
   users_profile_profile_picture: Buffer;
 
@@ -24,12 +25,19 @@ export class Profile {
   })
   occupation_status: string;
 
-  @OneToMany(() => Recommendation, (recommendation) => recommendation.profile)
+  // Define relationships with other entities
+  @OneToMany(() => Recommendation, (recommendation) => recommendation.profile, {
+    cascade: true, // Ensure cascading operations like save and delete
+  })
   recommendations: Recommendation[];
 
-  @OneToMany(() => Experience, (experience) => experience.profile)
+  @OneToMany(() => Experience, (experience) => experience.profile, {
+    cascade: true,
+  })
   experience: Experience[];
 
-  @OneToMany(() => Education, (education) => education.profile)
+  @OneToMany(() => Education, (education) => education.profile, {
+    cascade: true,
+  })
   educations: Education[];
 }
