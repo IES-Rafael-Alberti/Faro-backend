@@ -71,6 +71,7 @@ export class ProfileController {
     const profile = await this.profileService.findById(id);
 
     if (!profile || !profile.users_profile_profile_picture) {
+      // TODO: Make this a http exception
       throw new NotFoundException('Profile picture not found');
     }
 

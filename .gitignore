@@ -41,7 +41,6 @@ lerna-debug.log*
 dev.env
 
 # MariaDB data
-/docker
 /db_model/faro db model.mwb.bak
 /db_model/init.sql
 
