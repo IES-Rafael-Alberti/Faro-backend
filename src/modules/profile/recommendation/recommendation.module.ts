@@ -6,13 +6,12 @@ import { Profile } from '../entities/profile.entity';
 import { User } from '../../users/entities/user.entity';
 import { RecommendationService } from './recommendation.service';
 import { RecommendationController } from './recommendation.controller';
-import { ProfileService } from '../profile.service';
 import { UsersService } from '../../users/users.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Recommendation, Profile, User])],
   controllers: [RecommendationController],
-  providers: [RecommendationService, ProfileService, UsersService],
+  providers: [RecommendationService, UsersService],
   exports: [RecommendationService],
 })
 export class RecommendationModule {}

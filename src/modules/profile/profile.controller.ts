@@ -46,9 +46,9 @@ export class ProfileController {
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body() profileData: Partial<Profile>,
-  ): Promise<Profile> {
-    return await this.profileService.update(id, profileData);
+    @Body() profileData: Profile,
+  ): Promise<Profile | null> {
+    return await this.profileService.updateProfile(id, profileData);
   }
 
   @UseGuards(UserImpersonationProtectionGuard)
