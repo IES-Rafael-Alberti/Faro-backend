@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './modules/users/users.module';
 import { PublicationsModule } from './modules/publications/publications.module';
@@ -12,25 +11,24 @@ import { ProfileModule } from './modules/profile/profile.module';
 import { EducationModule } from './modules/profile/education/education.module';
 import { RecommendationModule } from './modules/profile/recommendation/recommendation.module';
 import { ExperienceModule } from './modules/profile/experience/experience.module';
+import { ConfigModule } from '@nestjs/config';
 
 // TODO: Implement logs system
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `src/config/${process.env.NODE_ENV}.env`,
+      envFilePath: `.env`,
     }),
     // TODO: Extract the database configuration to an external file
     TypeOrmModule.forRoot({
       type: 'mariadb',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '1234',
-      database: 'faro',
+      host: process.env.DB_HOST || 'localhost',
+      port: Number(process.env.DB_PORT) || 3306,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
       // TODO: Add the entities to the array in and external file
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      // TODO: Remove this line in production
-      synchronize: true,
     }),
     JwtModule.register({
       global: true,
