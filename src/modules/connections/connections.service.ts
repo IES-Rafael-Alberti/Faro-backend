@@ -17,6 +17,21 @@ export class ConnectionsService {
     private usersService: UsersService,
   ) {}
 
+  async getRequestsFromUser(user_id: string): Promise<string[]> {
+    const requests = await this.requestConnectionsRepository.find({
+      where: { applicant_id: user_id },
+    });
+
+    return requests.map((request) => request.required_id);
+  }
+
+  async getRequestMadeByUser(user_id: string): Promise<string[]> {
+    const requests = await this.requestConnectionsRepository.find({
+      where: { required_id: user_id },
+    });
+    return requests.map((request) => request.required_id);
+  }
+
   async getAllConnectionsFromUser(user_id: string): Promise<string[]> {
     const connections = await this.connectionsRepository
       .createQueryBuilder('connection')

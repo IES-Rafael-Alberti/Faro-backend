@@ -40,6 +40,8 @@ export class ProfileService {
     const profile = this.profileRepository.create(profileData);
     return await this.profileRepository.save(profile);
   }
+
+  // TODO: Refactor this function
   async updateProfile(id: string, updateData: any): Promise<Profile | null> {
     let updatedProfile: Profile | null = null;
 
