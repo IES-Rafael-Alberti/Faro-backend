@@ -29,6 +29,8 @@ import { ConfigModule } from '@nestjs/config';
       database: process.env.DB_DATABASE,
       // TODO: Add the entities to the array in and external file
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      // This line recreates the database schema every time the server starts
+      synchronize: true,
     }),
     JwtModule.register({
       global: true,

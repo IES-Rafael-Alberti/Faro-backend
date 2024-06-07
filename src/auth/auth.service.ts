@@ -58,7 +58,6 @@ export class AuthService {
     if (userExists) {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
-    console.log(userDtoFill);
     // Set generic Exeption, because the built-in exception can leak information
     try {
       await this.usersService.save(userDtoFill);

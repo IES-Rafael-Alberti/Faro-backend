@@ -77,13 +77,13 @@ export class UsersService {
 
   async save(userDto: UserDto): Promise<User> {
     const user = {
-      user_id: userDto.id,
-      user_name: userDto.name,
-      user_first_surname: userDto.first_surname,
-      user_second_surname: userDto.second_surname,
-      user_email: userDto.email,
-      user_password: userDto.password,
-      user_role: userDto.user_role,
+      id: userDto.id,
+      name: userDto.name,
+      first_surname: userDto.first_surname,
+      second_surname: userDto.second_surname,
+      email: userDto.email,
+      password: userDto.password,
+      role: userDto.user_role,
       users_profiles_user_profile_id: userDto.id,
     };
     return this.usersRepository.save(user);
