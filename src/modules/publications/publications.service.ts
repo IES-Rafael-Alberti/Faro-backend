@@ -53,8 +53,8 @@ export class PublicationsService {
         msg: user_publication_msg,
         created_at: users_publications_created_at,
         user_id: users_user_id,
-        name: `${user?.user_name} ${user?.user_first_surname}`,
-        user_role: `${user?.user_role}`,
+        name: `${user?.name} ${user?.first_surname}`,
+        user_role: `${user?.role}`,
       };
       return publicationDto;
     });
@@ -75,8 +75,8 @@ export class PublicationsService {
     if (!user) {
       throw new HttpException('The user does not exist', HttpStatus.NOT_FOUND);
     }
-    const name = `${user.user_name} ${user.user_first_surname}`;
-    const user_role = user.user_role;
+    const name = `${user.name} ${user.first_surname}`;
+    const user_role = user.role;
 
     const publication = new Publication();
     publication.user = user;
@@ -131,8 +131,8 @@ export class PublicationsService {
       throw new HttpException('The user does not exist', HttpStatus.NOT_FOUND);
     }
 
-    const name = `${user.user_name} ${user.user_first_surname}`;
-    const user_role = user.user_role;
+    const name = `${user.name} ${user.first_surname}`;
+    const user_role = user.role;
 
     try {
       // Get the publications reversed by date
