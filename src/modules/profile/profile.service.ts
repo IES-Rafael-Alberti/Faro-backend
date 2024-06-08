@@ -93,7 +93,6 @@ export class ProfileService {
         updatedProfile = await entityManager.save(profile);
       });
     } catch (error) {
-      // Log the error (you might want to use a logger instead of console.error)
       console.error(`Error updating profile with ID ${id}:`, error);
       throw error;
     }
