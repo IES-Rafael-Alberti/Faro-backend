@@ -47,52 +47,55 @@ export class ProfileService {
 
     try {
       await this.entityManager.transaction(async (entityManager) => {
-        try {
-          // Retrieve the Profile entity
-          const profile = await entityManager.findOne(Profile, {
-            where: { id },
-            relations: ['educations', 'experience', 'recommendations'],
-          });
+        // Retrieve the Profile entity
+        const profile = await entityManager.findOne(Profile, {
+          where: { id },
+          relations: ['educations', 'experience', 'recommendations'],
+        });
 
-          if (!profile) {
-            throw new NotFoundException(`Profile with ID ${id} not found`);
-          }
-
-          // Update Education
-          if (updateData.education) {
-            profile.educations.forEach((education, index) => {
-              if (updateData.education[index]) {
-                Object.assign(education, updateData.education[index]);
-              }
-            });
-          }
-
-          // Update Experience
-          if (updateData.experience) {
-            profile.experience.forEach((exp, index) => {
-              if (updateData.experience[index]) {
-                Object.assign(exp, updateData.experience[index]);
-              }
-            });
-          }
-
-          // Update Recommendations
-          if (updateData.recommendations) {
-            profile.recommendations.forEach((rec, index) => {
-              if (updateData.recommendations[index]) {
-                Object.assign(rec, updateData.recommendations[index]);
-              }
-            });
-          }
-
-          // Save the updated profile
-          updatedProfile = await entityManager.save(profile);
-        } catch (error) {
-          throw error;
+        if (!profile) {
+          throw new NotFoundException(`Profile with ID ${id} not found`);
         }
+
+        // Update Education
+        if (updateData.education) {
+          // Clear existing educations and add updated ones
+          await entityManager.remove(profile.educations);
+          profile.educations = updateData.education.map((edu: any) => {
+            return entityManager.create(Education, edu);
+          });
+        }
+
+        // Update Experience
+        if (updateData.experience) {
+          // Clear existing experience and add updated ones
+          await entityManager.remove(profile.experience);
+          profile.experience = updateData.experience.map((exp: any) => {
+            return entityManager.create(Experience, exp);
+          });
+        }
+
+        // Update Recommendations
+        if (updateData.recommendations) {
+          // Clear existing recommendations and add updated ones
+          await entityManager.remove(profile.recommendations);
+          profile.recommendations = updateData.recommendations.map(
+            (rec: any) => {
+              return entityManager.create(Recommendation, rec);
+            },
+          );
+        }
+
+        // Update other profile fields
+        Object.assign(profile, updateData);
+
+        // Save the updated profile
+        updatedProfile = await entityManager.save(profile);
       });
-    } catch (outerError) {
-      throw outerError;
+    } catch (error) {
+      // Log the error (you might want to use a logger instead of console.error)
+      console.error(`Error updating profile with ID ${id}:`, error);
+      throw error;
     }
     return updatedProfile;
   }
