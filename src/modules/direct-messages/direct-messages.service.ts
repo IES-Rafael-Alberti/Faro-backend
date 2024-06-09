@@ -28,7 +28,7 @@ export class DirectMessagesService {
         HttpStatus.NOT_FOUND,
       );
     }
-    // Assert that sender is not the same as receiver
+    // Assert that serder is not the same as receiver
     if (sender_id === receiver_id) {
       throw new HttpException(
         'Sender and receiver cannot be the same',
@@ -56,7 +56,6 @@ export class DirectMessagesService {
             sender_id: directMessage.user_direct_message_sender,
             receiver_id: directMessage.user_direct_message_receiber,
             message_id: directMessage.users_direct_message_id,
-            date: directMessage.user_direct_message_date,
           };
         });
       });
@@ -78,7 +77,7 @@ export class DirectMessagesService {
         HttpStatus.NOT_FOUND,
       );
     }
-    // Assert that sender is not the same as receiver
+    // Assert that serder is not the same as receiver
     if (sender_id === receiver_id) {
       throw new HttpException(
         'Sender and receiver cannot be the same',
@@ -94,16 +93,13 @@ export class DirectMessagesService {
 
     // Create a direct message entity and save it to the repository
     const directMessage = this.directMessagesRepository.create({
+
       user_direct_message_msg: msg,
       user_direct_message_sender: sender_id,
       user_direct_message_receiber: receiver_id,
       users_direct_message_id: uuidv4(),
-      user_direct_message_date: formatDateForMySQL(new Date()), // Format the date before saving
     });
     await this.directMessagesRepository.save(directMessage);
-    return {
-      ...createDirectMessageDto,
-      date: directMessage.user_direct_message_date,
-    };
+    return createDirectMessageDto;
   }
 }

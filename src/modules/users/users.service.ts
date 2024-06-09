@@ -5,6 +5,9 @@ import { User } from './entities/user.entity';
 import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
 import { UserDto } from './entities/user.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import { InputUserDto } from './entities/input.user.dto';
+import { hash } from 'bcrypt';
 import { Profile } from '../profile/entities/profile.entity';
 
 @Injectable()
@@ -106,7 +109,7 @@ export class UsersService {
       profile_id: user.users_profiles_user_profile_id,
     };
   }
-
+  
   // Method to update an existing user
   async update(id: string, userDto: UserDto): Promise<UserDto> {
     const user = await this.usersRepository.findOne({ where: { id } });
@@ -116,13 +119,14 @@ export class UsersService {
     // Assign properties from userDto to user
     Object.assign(user, userDto);
     const updatedUser = await this.usersRepository.save(user);
+
     return {
       id: updatedUser.id,
       name: updatedUser.name,
       first_surname: updatedUser.first_surname,
       second_surname: updatedUser.second_surname,
-      email: updatedUser.email,
-      password: updatedUser.password,
+      email: '',
+      password: '',
       user_role: updatedUser.role,
       profile_id: updatedUser.users_profiles_user_profile_id,
     };
