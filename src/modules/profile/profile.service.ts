@@ -1,8 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
-
 import { EntityManager, Repository } from 'typeorm';
-
 import { Profile } from './entities/profile.entity';
 import { Education } from './education/entity/education.entity';
 import { Experience } from './experience/entity/experience.entity';
@@ -23,10 +21,12 @@ export class ProfileService {
     private readonly entityManager: EntityManager,
   ) {}
 
+  // Method to fetch all profiles
   async findAll(): Promise<Profile[]> {
     return await this.profileRepository.find();
   }
 
+  // Method to find a profile by ID
   async findById(id: string): Promise<Profile> {
     const profile = await this.profileRepository.findOne({ where: { id } });
 
@@ -36,11 +36,13 @@ export class ProfileService {
     return profile;
   }
 
+  // Method to create a new profile
   async create(profileData: Partial<Profile>): Promise<Profile> {
     const profile = this.profileRepository.create(profileData);
     return await this.profileRepository.save(profile);
   }
 
+  // Method to update a profile
   async updateProfile(id: string, updateData: any): Promise<Profile | null> {
     let updatedProfile: Profile | null = null;
 
@@ -48,7 +50,7 @@ export class ProfileService {
       await this.entityManager.transaction(async (entityManager) => {
         console.log(`Starting transaction for updating profile with ID ${id}`);
 
-        // Retrieve the Profile entity
+        // Retrieve the Profile entity with related entities
         const profile = await entityManager.findOne(Profile, {
           where: { id },
           relations: ['educations', 'experience', 'recommendations'],
@@ -74,10 +76,12 @@ export class ProfileService {
     return updatedProfile;
   }
 
+  // Method to delete a profile
   async delete(id: string): Promise<void> {
     await this.profileRepository.delete(id);
   }
 
+  // Method to update profile picture
   async updateProfilePicture(
     id: string,
     file: Express.Multer.File,
