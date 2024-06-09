@@ -6,7 +6,6 @@ import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
 import { UserDto } from './entities/user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { hash } from 'bcrypt';
 import { Profile } from '../profile/entities/profile.entity';
 
 @Injectable()
@@ -102,14 +101,15 @@ export class UsersService {
       profile_id: id,
     };
   }
-  // TODO: refactor this fucking function 
+  // TODO: refactor this fucking function
   async update(id: string, userDto: UserDto): Promise<UserDto> {
     const user = await this.usersRepository.findOne({ where: { user_id: id } });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
-    user.user_role = 'student';
+    // Assign properties from userDto to user
+    Object.assign(user, userDto);
 
     const updatedUser = await this.usersRepository.save(user);
 
