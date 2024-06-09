@@ -41,13 +41,12 @@ export class ProfileService {
     return await this.profileRepository.save(profile);
   }
 
+  // TODO: Refactor this function
   async updateProfile(id: string, updateData: any): Promise<Profile | null> {
     let updatedProfile: Profile | null = null;
 
     try {
       await this.entityManager.transaction(async (entityManager) => {
-        console.log(`Starting transaction for updating profile with ID ${id}`);
-
         // Retrieve the Profile entity
         const profile = await entityManager.findOne(Profile, {
           where: { id },
@@ -55,17 +54,43 @@ export class ProfileService {
         });
 
         if (!profile) {
-          console.error(`Profile with ID ${id} not found`);
           throw new NotFoundException(`Profile with ID ${id} not found`);
         }
-        console.log(`Profile found: ${JSON.stringify(profile)}`);
 
-        // Update the profile with new data
+        // Update Education
+        if (updateData.education) {
+          // Clear existing educations and add updated ones
+          await entityManager.remove(profile.educations);
+          profile.educations = updateData.education.map((edu: any) => {
+            return entityManager.create(Education, edu);
+          });
+        }
+
+        // Update Experience
+        if (updateData.experience) {
+          // Clear existing experience and add updated ones
+          await entityManager.remove(profile.experience);
+          profile.experience = updateData.experience.map((exp: any) => {
+            return entityManager.create(Experience, exp);
+          });
+        }
+
+        // Update Recommendations
+        if (updateData.recommendations) {
+          // Clear existing recommendations and add updated ones
+          await entityManager.remove(profile.recommendations);
+          profile.recommendations = updateData.recommendations.map(
+            (rec: any) => {
+              return entityManager.create(Recommendation, rec);
+            },
+          );
+        }
+
+        // Update other profile fields
         Object.assign(profile, updateData);
 
         // Save the updated profile
         updatedProfile = await entityManager.save(profile);
-        console.log(`Profile with ID ${id} updated successfully`);
       });
     } catch (error) {
       console.error(`Error updating profile with ID ${id}:`, error);

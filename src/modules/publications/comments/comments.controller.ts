@@ -17,7 +17,6 @@ export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
   @UseGuards(AuthGuard)
-  @UseGuards(UserImpersonationProtectionGuard)
   @Post()
   async addComment(
     @Body() createCommentDto: CreateCommentDto,
@@ -39,13 +38,15 @@ export class CommentsController {
 
   @UseGuards(AuthGuard)
   @UseGuards(UserImpersonationProtectionGuard)
-  @Delete(':id/user/:user_id/publication/:publication_id')
+  @Delete()
   async removeComment(
-    @Param('id') id: string,
-    @Param('user_id') userId: string,
-    @Param('publication_id') publicationId: string,
+    @Body() data: { id: string; user_id: string; publication_id: string },
   ): Promise<void> {
-    return this.commentsService.removeComment(id, userId, publicationId);
+    return this.commentsService.removeComment(
+      data.id,
+      data.user_id,
+      data.publication_id,
+    );
   }
 
   @UseGuards(AuthGuard)

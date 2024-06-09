@@ -6,6 +6,8 @@ import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
 import { UserDto } from './entities/user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { InputUserDto } from './entities/input.user.dto';
+import { hash } from 'bcrypt';
 import { Profile } from '../profile/entities/profile.entity';
 
 @Injectable()
@@ -102,25 +104,25 @@ export class UsersService {
     };
   }
 
-  async update(id: string, userDto: UserDto): Promise<UserDto> {
-    const user = await this.usersRepository.findOne({ where: { id: id } });
-
+  async path(userDto: InputUserDto): Promise<UserDto> {
+    const user = await this.usersRepository.findOne({
+      where: { id: userDto.user_id } as FindOptionsWhere<User>,
+    });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-
-    // Assign properties from userDto to user
-    Object.assign(user, userDto);
-
-    const updatedUser = await this.usersRepository.save(user);
-
+    if (userDto.password) {
+      userDto.password = await hash(userDto.password, 10);
+    }
+    userDto.user_role = 'student';
+    const updatedUser = await this.save({ ...user, ...userDto });
     return {
       id: updatedUser.id,
       name: updatedUser.name,
       first_surname: updatedUser.first_surname,
       second_surname: updatedUser.second_surname,
-      email: updatedUser.email,
-      password: updatedUser.password,
+      email: '',
+      password: '',
       user_role: updatedUser.role,
       profile_id: updatedUser.users_profiles_user_profile_id,
     };

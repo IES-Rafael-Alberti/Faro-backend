@@ -10,8 +10,6 @@ import {
   NotFoundException,
   UseFilters,
   UseGuards,
-  BadRequestException,
-  UploadedFile,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { Profile } from './entities/profile.entity';
@@ -67,22 +65,6 @@ export class ProfileController {
       limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB size limit
     }),
   )
-  async uploadFile(
-    @Param('id') id: string,
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<Profile> {
-    if (!file) {
-      throw new BadRequestException('File is required');
-    }
-
-    const updatedProfile = await this.profileService.updateProfilePicture(
-      id,
-      file,
-    );
-
-    return updatedProfile;
-  }
-
   @UseGuards(AuthGuard)
   @Get('picture/:id')
   async getProfilePicture(@Param('id') id: string): Promise<string> {
