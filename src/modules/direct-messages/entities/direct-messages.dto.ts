@@ -14,4 +14,6 @@ export class CreateDirectMessageDto {
   @IsString()
   @IsNotEmpty()
   receiver_id: string;
+
+  date: Date;
 }
