@@ -103,7 +103,7 @@ export class UsersService {
   }
 
   async update(id: string, userDto: UserDto): Promise<UserDto> {
-    const user = await this.usersRepository.findOne({ where: { user_id: id } });
+    const user = await this.usersRepository.findOne({ where: { id: id } });
 
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
@@ -115,14 +115,13 @@ export class UsersService {
     const updatedUser = await this.usersRepository.save(user);
 
     return {
-      user_id: updatedUser.user_id,
-      name: updatedUser.user_name,
-      first_surname: updatedUser.user_first_surname,
-      second_surname: updatedUser.user_second_surname,
-      email: updatedUser.user_email,
-      password: updatedUser.user_password,
-      user_role: updatedUser.user_role,
-
+      id: updatedUser.id,
+      name: updatedUser.name,
+      first_surname: updatedUser.first_surname,
+      second_surname: updatedUser.second_surname,
+      email: updatedUser.email,
+      password: updatedUser.password,
+      user_role: updatedUser.role,
       profile_id: updatedUser.users_profiles_user_profile_id,
     };
   }

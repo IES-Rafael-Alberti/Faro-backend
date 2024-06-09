@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserDto } from './entities/user.dto';
-import { InputUserDto } from './entities/input.user.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { UserImpersonationProtectionGuard } from 'src/auth/guards/UserImpersonationProtectionGuard.guard';
 import { PublicationsService } from 'src/modules/publications/publications.service';
@@ -43,7 +42,7 @@ export class UsersController {
   @Patch('update/:id')
   updateById(
     @Param('id') id: string,
-    @Body() userDto: InputUserDto,
+    @Body() userDto: UserDto,
   ): Promise<UserDto> {
     return this.usersService.update(id, userDto);
   }
