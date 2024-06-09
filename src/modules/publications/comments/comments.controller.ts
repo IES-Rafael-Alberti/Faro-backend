@@ -39,15 +39,13 @@ export class CommentsController {
 
   @UseGuards(AuthGuard)
   @UseGuards(UserImpersonationProtectionGuard)
-  @Delete()
+  @Delete(':id/user/:user_id/publication/:publication_id')
   async removeComment(
-    @Body() data: { id: string; user_id: string; publication_id: string },
+    @Param('id') id: string,
+    @Param('user_id') userId: string,
+    @Param('publication_id') publicationId: string,
   ): Promise<void> {
-    return this.commentsService.removeComment(
-      data.id,
-      data.user_id,
-      data.publication_id,
-    );
+    return this.commentsService.removeComment(id, userId, publicationId);
   }
 
   @UseGuards(AuthGuard)
