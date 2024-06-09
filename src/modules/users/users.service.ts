@@ -6,7 +6,6 @@ import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
 import { UserDto } from './entities/user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { InputUserDto } from './entities/input.user.dto';
 import { hash } from 'bcrypt';
 import { Profile } from '../profile/entities/profile.entity';
 
@@ -103,26 +102,24 @@ export class UsersService {
       profile_id: id,
     };
   }
-
-  async path(userDto: InputUserDto): Promise<UserDto> {
-    const user = await this.usersRepository.findOne({
-      where: { user_id: userDto.user_id } as FindOptionsWhere<User>,
-    });
+  // TODO: refactor this fucking function 
+  async update(id: string, userDto: UserDto): Promise<UserDto> {
+    const user = await this.usersRepository.findOne({ where: { user_id: id } });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-    if (userDto.password) {
-      userDto.password = await hash(userDto.password, 10);
-    }
-    userDto.user_role = 'student';
-    const updatedUser = await this.save({ ...user, ...userDto });
+
+    user.user_role = 'student';
+
+    const updatedUser = await this.usersRepository.save(user);
+
     return {
       user_id: updatedUser.user_id,
       name: updatedUser.user_name,
       first_surname: updatedUser.user_first_surname,
       second_surname: updatedUser.user_second_surname,
-      email: '',
-      password: '',
+      email: updatedUser.user_email,
+      password: updatedUser.user_password,
       user_role: updatedUser.user_role,
       profile_id: updatedUser.users_profiles_user_profile_id,
     };

@@ -40,9 +40,12 @@ export class UsersController {
 
   @UseGuards(AuthGuard)
   @UseGuards(UserImpersonationProtectionGuard)
-  @Patch('update')
-  updateById(@Body() userDto: InputUserDto): Promise<UserDto> {
-    return this.usersService.path(userDto);
+  @Patch('update/:id')
+  updateById(
+    @Param('id') id: string,
+    @Body() userDto: InputUserDto,
+  ): Promise<UserDto> {
+    return this.usersService.update(id, userDto);
   }
 
   @UseGuards(AuthGuard)
