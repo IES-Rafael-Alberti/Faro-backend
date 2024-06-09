@@ -6,8 +6,6 @@ import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
 import { UserDto } from './entities/user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { InputUserDto } from './entities/input.user.dto';
-import { hash } from 'bcrypt';
 import { Profile } from '../profile/entities/profile.entity';
 
 @Injectable()
@@ -23,13 +21,13 @@ export class UsersService {
     const users = await this.usersRepository.find();
     return users.map((user) => {
       const userDto = {
-        user_id: user.user_id,
-        name: user.user_name,
-        first_surname: user.user_first_surname,
-        second_surname: user.user_second_surname,
+        id: user.id,
+        name: user.name,
+        first_surname: user.first_surname,
+        second_surname: user.second_surname,
         email: '',
         password: '',
-        user_role: user.user_role,
+        user_role: user.role,
         profile_id: user.users_profiles_user_profile_id,
       };
       return userDto;
@@ -38,32 +36,32 @@ export class UsersService {
 
   async findOneById(id: string): Promise<User | null> {
     return this.usersRepository.findOne({
-      where: { user_id: id } as FindOptionsWhere<User>,
+      where: { id: id } as FindOptionsWhere<User>,
     });
   }
 
   async findOneByIdUserDto(id: string): Promise<UserDto | null> {
     const user = await this.usersRepository.findOne({
-      where: { user_id: id } as FindOptionsWhere<User>,
+      where: { id: id } as FindOptionsWhere<User>,
     });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     return {
-      user_id: user.user_id,
-      name: user.user_name,
-      first_surname: user.user_first_surname,
-      second_surname: user.user_second_surname,
+      id: user.id,
+      name: user.name,
+      first_surname: user.first_surname,
+      second_surname: user.second_surname,
       email: '',
       password: '',
-      user_role: user.user_role,
+      user_role: user.role,
       profile_id: user.users_profiles_user_profile_id,
     };
   }
 
   async findOneByEmail(email: string): Promise<User | null> {
     return this.usersRepository.findOne({
-      where: { user_email: email } as FindOptionsWhere<User>,
+      where: { email: email } as FindOptionsWhere<User>,
     });
   }
 
@@ -77,14 +75,14 @@ export class UsersService {
 
   async save(userDto: UserDto): Promise<User> {
     const user = {
-      user_id: userDto.user_id,
-      user_name: userDto.name,
-      user_first_surname: userDto.first_surname,
-      user_second_surname: userDto.second_surname,
-      user_email: userDto.email,
-      user_password: userDto.password,
-      user_role: userDto.user_role,
-      users_profiles_user_profile_id: userDto.user_id,
+      id: userDto.id,
+      name: userDto.name,
+      first_surname: userDto.first_surname,
+      second_surname: userDto.second_surname,
+      email: userDto.email,
+      password: userDto.password,
+      role: userDto.user_role,
+      users_profiles_user_profile_id: userDto.id,
     };
     return this.usersRepository.save(user);
   }
@@ -93,37 +91,38 @@ export class UsersService {
     const id = uuidv4();
     const user = await this.save(userDto);
     return {
-      user_id: id,
-      name: user.user_name,
-      first_surname: user.user_first_surname,
-      second_surname: user.user_second_surname,
-      email: user.user_email,
-      password: user.user_password,
-      user_role: user.user_role,
+      id: id,
+      name: user.name,
+      first_surname: user.first_surname,
+      second_surname: user.second_surname,
+      email: user.email,
+      password: user.password,
+      user_role: user.role,
       profile_id: id,
     };
   }
 
-  async path(userDto: InputUserDto): Promise<UserDto> {
-    const user = await this.usersRepository.findOne({
-      where: { user_id: userDto.user_id } as FindOptionsWhere<User>,
-    });
+  async update(id: string, userDto: UserDto): Promise<UserDto> {
+    const user = await this.usersRepository.findOne({ where: { user_id: id } });
+
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-    if (userDto.password) {
-      userDto.password = await hash(userDto.password, 10);
-    }
-    userDto.user_role = 'student';
-    const updatedUser = await this.save({ ...user, ...userDto });
+
+    // Assign properties from userDto to user
+    Object.assign(user, userDto);
+
+    const updatedUser = await this.usersRepository.save(user);
+
     return {
       user_id: updatedUser.user_id,
       name: updatedUser.user_name,
       first_surname: updatedUser.user_first_surname,
       second_surname: updatedUser.user_second_surname,
-      email: '',
-      password: '',
+      email: updatedUser.user_email,
+      password: updatedUser.user_password,
       user_role: updatedUser.user_role,
+
       profile_id: updatedUser.users_profiles_user_profile_id,
     };
   }

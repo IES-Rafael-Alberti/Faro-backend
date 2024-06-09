@@ -10,7 +10,7 @@ import {
 export class UserDto {
   @IsUUID()
   @IsOptional()
-  user_id: string;
+  id: string;
 
   @IsString()
   @Length(1, 45)

@@ -40,84 +40,37 @@ export class ProfileService {
     const profile = this.profileRepository.create(profileData);
     return await this.profileRepository.save(profile);
   }
+
   async updateProfile(id: string, updateData: any): Promise<Profile | null> {
     let updatedProfile: Profile | null = null;
 
-    console.log(`Starting updateProfile for ID: ${id}`);
-    console.log(`Update data: ${JSON.stringify(updateData)}`);
-
     try {
       await this.entityManager.transaction(async (entityManager) => {
-        try {
-          console.log('Transaction started');
+        console.log(`Starting transaction for updating profile with ID ${id}`);
 
-          // Retrieve the Profile entity
-          const profile = await entityManager.findOne(Profile, {
-            where: { id },
-            relations: ['educations', 'experience', 'recommendations'],
-          });
-          console.log(`Profile retrieved: ${JSON.stringify(profile)}`);
+        // Retrieve the Profile entity
+        const profile = await entityManager.findOne(Profile, {
+          where: { id },
+          relations: ['educations', 'experience', 'recommendations'],
+        });
 
-          if (!profile) {
-            console.error(`Profile with ID ${id} not found`);
-            throw new NotFoundException(`Profile with ID ${id} not found`);
-          }
-
-          // Update Education
-          if (updateData.education) {
-            console.log('Updating education');
-            profile.educations.forEach((education, index) => {
-              if (updateData.education[index]) {
-                Object.assign(education, updateData.education[index]);
-              }
-            });
-            console.log(
-              `Updated education: ${JSON.stringify(profile.educations)}`,
-            );
-          }
-
-          // Update Experience
-          if (updateData.experience) {
-            console.log('Updating experience');
-            profile.experience.forEach((exp, index) => {
-              if (updateData.experience[index]) {
-                Object.assign(exp, updateData.experience[index]);
-              }
-            });
-            console.log(
-              `Updated experience: ${JSON.stringify(profile.experience)}`,
-            );
-          }
-
-          // Update Recommendations
-          if (updateData.recommendations) {
-            console.log('Updating recommendations');
-            profile.recommendations.forEach((rec, index) => {
-              if (updateData.recommendations[index]) {
-                Object.assign(rec, updateData.recommendations[index]);
-              }
-            });
-            console.log(
-              `Updated recommendations: ${JSON.stringify(
-                profile.recommendations,
-              )}`,
-            );
-          }
-
-          // Save the updated profile
-          updatedProfile = await entityManager.save(profile);
-          console.log(`Profile saved: ${JSON.stringify(updatedProfile)}`);
-        } catch (error) {
-          console.error('Error during transaction', error);
-          throw error;
+        if (!profile) {
+          console.error(`Profile with ID ${id} not found`);
+          throw new NotFoundException(`Profile with ID ${id} not found`);
         }
-      });
-    } catch (outerError) {
-      console.error('Transaction failed', outerError);
-      throw outerError;
-    }
+        console.log(`Profile found: ${JSON.stringify(profile)}`);
 
-    console.log(`Returning updated profile: ${JSON.stringify(updatedProfile)}`);
+        // Update the profile with new data
+        Object.assign(profile, updateData);
+
+        // Save the updated profile
+        updatedProfile = await entityManager.save(profile);
+        console.log(`Profile with ID ${id} updated successfully`);
+      });
+    } catch (error) {
+      console.error(`Error updating profile with ID ${id}:`, error);
+      throw error;
+    }
     return updatedProfile;
   }
 

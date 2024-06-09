@@ -25,6 +25,22 @@ export class ConnectionsController {
   }
 
   @UseGuards(AuthGuard)
+  @Get('request/:user_id')
+  async getRequestsFromUser(
+    @Param('user_id') user_id: string,
+  ): Promise<string[]> {
+    return await this.connectionsService.getRequestsFromUser(user_id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('request/:user_id')
+  async getRequestsThatTheUserMade(
+    @Param('user_id') user_id: string,
+  ): Promise<string[]> {
+    return await this.connectionsService.getRequestMadeByUser(user_id);
+  }
+
+  @UseGuards(AuthGuard)
   @UseGuards(ConnectionImpersonationProtectionGuard)
   @Post('request')
   async requestConnection(

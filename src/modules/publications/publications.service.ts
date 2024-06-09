@@ -53,8 +53,8 @@ export class PublicationsService {
         msg: user_publication_msg,
         created_at: users_publications_created_at,
         user_id: users_user_id,
-        name: `${user?.user_name} ${user?.user_first_surname}`,
-        user_role: `${user?.user_role}`,
+        name: `${user?.name} ${user?.first_surname}`,
+        user_role: `${user?.role}`,
       };
       return publicationDto;
     });
@@ -75,8 +75,8 @@ export class PublicationsService {
     if (!user) {
       throw new HttpException('The user does not exist', HttpStatus.NOT_FOUND);
     }
-    const name = `${user.user_name} ${user.user_first_surname}`;
-    const user_role = user.user_role;
+    const name = `${user.name} ${user.first_surname}`;
+    const user_role = user.role;
 
     const publication = new Publication();
     publication.user = user;
@@ -130,33 +130,32 @@ export class PublicationsService {
     if (!user) {
       throw new HttpException('The user does not exist', HttpStatus.NOT_FOUND);
     }
-    const name = `${user.user_name} ${user.user_first_surname}`;
-    const user_role = user.user_role;
-    // Get the publications reversed by date
-    return this.publicationsRepository
-      .find({
-        where: { users_user_id: user_id } as ObjectLiteral,
+
+    const name = `${user.name} ${user.first_surname}`;
+    const user_role = user.role;
+
+    try {
+      // Get the publications reversed by date
+      const publications = await this.publicationsRepository.find({
+        where: { users_user_id: user_id },
         order: { users_publications_created_at: 'DESC' },
-      })
-      .then((publications) =>
-        publications.map((publication) => {
-          const {
-            user_publication_id,
-            user_publication_msg,
-            users_publications_created_at,
-            users_user_id,
-          } = publication;
-          const publicationDto: CreatePublicationDto = {
-            id: user_publication_id,
-            msg: user_publication_msg,
-            created_at: users_publications_created_at,
-            user_id: users_user_id,
-            name: name,
-            user_role: user_role,
-          };
-          return publicationDto;
-        }),
+      });
+
+      return publications.map((publication) => ({
+        id: publication.user_publication_id,
+        msg: publication.user_publication_msg,
+        created_at: publication.users_publications_created_at,
+        user_id: publication.users_user_id,
+        name: name,
+        user_role: user_role,
+      }));
+    } catch (error) {
+      // Handle any errors that might occur during the query
+      throw new HttpException(
+        'Internal server error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
   }
 
   async countAllPublicationsFromUser(user_id: string): Promise<number> {

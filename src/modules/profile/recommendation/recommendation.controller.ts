@@ -76,7 +76,6 @@ export class RecommendationController {
   @Delete(':id')
   remove(@Param('id') id: string): Promise<void> {
     return this.recommendationService.remove(id).catch((error) => {
-      console.error(`Error removing recommendation with ID ${id}:`, error);
       throw error;
     });
   }
