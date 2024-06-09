@@ -82,7 +82,7 @@ export class ProfileController {
 
     return updatedProfile;
   }
-  
+
   @UseGuards(AuthGuard)
   @Get('picture/:id')
   async getProfilePicture(@Param('id') id: string): Promise<string> {
