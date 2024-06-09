@@ -26,7 +26,14 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Deployment 
+
+[URL]( https://faro-backend-nusu.onrender.com)
+
+
 ## Installation
+
+
 
 ```bash
 $ npm install
