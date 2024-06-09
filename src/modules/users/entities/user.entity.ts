@@ -3,25 +3,25 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  user_id: string;
+  id: string;
 
   @Column({ type: 'varchar', length: 45 })
-  user_name: string;
+  name: string;
 
   @Column({ type: 'varchar', length: 45 })
-  user_first_surname: string;
+  first_surname: string;
 
   @Column({ type: 'varchar', length: 45, nullable: true })
-  user_second_surname: string;
+  second_surname: string;
 
   @Column({ type: 'varchar', length: 254 })
-  user_email: string;
+  email: string;
 
   @Column({ type: 'varchar', length: 60 })
-  user_password: string;
+  password: string;
 
   @Column({ type: 'enum', enum: ['admin', 'teacher', 'company', 'student'] })
-  user_role: string;
+  role: string;
 
   @Column({ type: 'uuid' })
   users_profiles_user_profile_id: string;
