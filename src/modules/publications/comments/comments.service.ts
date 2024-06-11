@@ -58,15 +58,15 @@ export class CommentsService {
   }
 
   async removeComment(
+    id: string,
     user_id: string,
     publication_id: string,
-    comment_msg: string,
   ): Promise<void> {
     const comment = await this.commentsRepository.findOne({
       where: {
         user_id,
         publication_id,
-        comment: comment_msg,
+        id,
       } as FindOptionsWhere<Comment>,
     });
     if (!comment) {
