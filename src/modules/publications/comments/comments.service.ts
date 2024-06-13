@@ -12,12 +12,14 @@ export class CommentsService {
     private commentsRepository: Repository<Comment>,
   ) {}
 
+  // Method to create a new comment
   async create(createCommentDto: CreateCommentDto): Promise<CreateCommentDto> {
     const comment = this.commentsRepository.create(createCommentDto);
     await this.commentsRepository.save(comment);
     return comment;
   }
 
+  // Method to find all comments by publication ID
   async findAllCommentsByPublicationId(
     publication_id: string,
   ): Promise<CreateCommentDto[]> {
@@ -36,6 +38,7 @@ export class CommentsService {
     });
   }
 
+  // Method to add a comment
   async addComment(
     user_id: string,
     publication_id: string,
@@ -57,6 +60,7 @@ export class CommentsService {
     return this.create(commentDto);
   }
 
+  // Method to remove a comment
   async removeComment(
     id: string,
     user_id: string,
@@ -75,6 +79,7 @@ export class CommentsService {
     await this.commentsRepository.remove(comment);
   }
 
+  // Method to count comments by publication ID
   async countCommentsByPublicationId(publication_id: string): Promise<number> {
     const comments = await this.commentsRepository.find({
       where: { publication_id } as FindOptionsWhere<Comment>,

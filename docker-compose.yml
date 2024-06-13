@@ -8,7 +8,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 1234
       MYSQL_DATABASE: faro
-      MYSQL_USER: user
+      MYSQL_USER: user 
       MYSQL_PASSWORD: 1234
     volumes:
       # DB structure and data

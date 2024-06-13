@@ -14,6 +14,7 @@ export class DirectMessagesService {
     private usersService: UsersService,
   ) {}
 
+  // Get all direct messages between two users
   async getAllDirectMessagesFromTwoUsers(
     sender_id: string,
     receiver_id: string,
@@ -34,6 +35,7 @@ export class DirectMessagesService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    // Retrieve direct messages between the two users
     const directMessages = await this.directMessagesRepository
       .find({
         where: [
@@ -60,6 +62,7 @@ export class DirectMessagesService {
     return directMessages;
   }
 
+  // Create a direct message
   async create(
     createDirectMessageDto: CreateDirectMessageDto,
   ): Promise<CreateDirectMessageDto> {
@@ -82,7 +85,9 @@ export class DirectMessagesService {
       );
     }
     const { msg } = createDirectMessageDto;
-    const directMessage = await this.directMessagesRepository.create({
+
+    // Create a direct message entity and save it to the repository
+    const directMessage = this.directMessagesRepository.create({
       user_direct_message_msg: msg,
       user_direct_message_sender: sender_id,
       user_direct_message_receiber: receiver_id,
