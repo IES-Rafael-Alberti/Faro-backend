@@ -117,13 +117,14 @@ export class UsersService {
     // Assign properties from userDto to user
     Object.assign(user, userDto);
     const updatedUser = await this.usersRepository.save(user);
+
     return {
       user_id: updatedUser.id,
       name: updatedUser.name,
       first_surname: updatedUser.first_surname,
       second_surname: updatedUser.second_surname,
-      email: updatedUser.email,
-      password: updatedUser.password,
+      email: '',
+      password: '',
       user_role: updatedUser.role,
       profile_id: updatedUser.users_profiles_user_profile_id,
     };

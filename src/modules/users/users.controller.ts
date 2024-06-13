@@ -10,12 +10,12 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserDto } from './entities/user.dto';
+import { InputUserDto } from './entities/input.user.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { UserImpersonationProtectionGuard } from 'src/auth/guards/UserImpersonationProtectionGuard.guard';
 import { PublicationsService } from 'src/modules/publications/publications.service';
 import { ConnectionsService } from 'src/modules/connections/connections.service';
 import { DEFAULT_IMG } from 'src/consts';
-import { InputUserDto } from './entities/input.user.dto';
 
 @Controller('users')
 export class UsersController {
