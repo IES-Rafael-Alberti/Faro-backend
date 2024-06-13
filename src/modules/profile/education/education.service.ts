@@ -13,6 +13,7 @@ export class EducationService {
 
   // Method to create a new education record
   create(education: Education): Promise<Education> {
+    console.log('Creating education record:', education);
     return this.educationRepository.save(education);
   }
 

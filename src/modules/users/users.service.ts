@@ -6,6 +6,7 @@ import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
 import { UserDto } from './entities/user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { Profile } from '../profile/entities/profile.entity';
+import { InputUserDto } from './entities/input.user.dto';
 
 @Injectable()
 export class UsersService {
@@ -108,7 +109,7 @@ export class UsersService {
   }
 
   // Method to update an existing user
-  async update(id: string, userDto: UserDto): Promise<UserDto> {
+  async update(id: string, userDto: InputUserDto): Promise<InputUserDto> {
     const user = await this.usersRepository.findOne({ where: { id } });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
@@ -117,7 +118,7 @@ export class UsersService {
     Object.assign(user, userDto);
     const updatedUser = await this.usersRepository.save(user);
     return {
-      id: updatedUser.id,
+      user_id: updatedUser.id,
       name: updatedUser.name,
       first_surname: updatedUser.first_surname,
       second_surname: updatedUser.second_surname,
