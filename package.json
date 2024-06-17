@@ -8,8 +8,8 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "NODE_ENV=local nest start",
-    "start:dev": "NODE_ENV=dev nest start --watch",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -27,7 +27,6 @@
     "@nestjs/platform-express": "^10.3.7",
     "@nestjs/typeorm": "10.0.2",
     "bcrypt": "^5.1.1",
-    "class-transformer": "0.5.1",
     "class-validator": "0.14.1",
     "mysql2": "^3.9.6",
     "reflect-metadata": "0.1.13",

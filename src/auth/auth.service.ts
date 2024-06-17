@@ -24,13 +24,13 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException();
     }
-    const isPasswordMatching = await compare(pass, user.user_password);
+    const isPasswordMatching = await compare(pass, user.password);
     if (!isPasswordMatching) {
       throw new UnauthorizedException();
     }
-    const payload = { id: user.user_id, email: user.user_email };
+    const payload = { id: user.id, email: user.email };
     return {
-      id: user.user_id,
+      id: user.id,
       access_token: await this.jwtService.signAsync(payload),
     };
   }
@@ -40,7 +40,7 @@ export class AuthService {
   ): Promise<{ id: string; access_token: string }> {
     const id = uuidv4();
     const userDtoFill = {
-      user_id: id,
+      id: id,
       name: userDto.name,
       first_surname: userDto.first_surname,
       second_surname: userDto.second_surname,
@@ -62,12 +62,9 @@ export class AuthService {
     try {
       await this.usersService.save(userDtoFill);
     } catch (error) {
-      throw new HttpException(
-        'Error saving user',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    const payload = { id: userDtoFill.user_id, email: userDtoFill.email };
+    const payload = { id: userDtoFill.id, email: userDtoFill.email };
     this.profileService.create({ id: id });
     return {
       id: id,
