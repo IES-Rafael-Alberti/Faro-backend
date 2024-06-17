@@ -17,14 +17,15 @@ export class ConnectionsService {
     private usersService: UsersService,
   ) {}
 
+  // Get requests made to a user
   async getRequestsFromUser(user_id: string): Promise<string[]> {
     const requests = await this.requestConnectionsRepository.find({
       where: { applicant_id: user_id },
     });
-
     return requests.map((request) => request.required_id);
   }
 
+  // Get requests made by a user
   async getRequestMadeByUser(user_id: string): Promise<string[]> {
     const requests = await this.requestConnectionsRepository.find({
       where: { required_id: user_id },
@@ -32,6 +33,7 @@ export class ConnectionsService {
     return requests.map((request) => request.required_id);
   }
 
+  // Get all connections of a user
   async getAllConnectionsFromUser(user_id: string): Promise<string[]> {
     const connections = await this.connectionsRepository
       .createQueryBuilder('connection')
@@ -46,6 +48,7 @@ export class ConnectionsService {
     });
   }
 
+  // Create a connection between two users
   async createConnection(
     user_id: string,
     connected_user_id: string,
@@ -59,11 +62,12 @@ export class ConnectionsService {
     return { message: 'Connection created successfully' };
   }
 
+  // Request a connection between two users
   async requestConnection(
     applicant_id: string,
     required_id: string,
   ): Promise<{ message: string }> {
-    // Assert that the applicant and required exist
+    // Assert that both users exist
     const applicant = await this.usersService.findOneById(applicant_id);
     const required = await this.usersService.findOneById(required_id);
     if (!applicant || !required) {
@@ -72,52 +76,45 @@ export class ConnectionsService {
         HttpStatus.NOT_FOUND,
       );
     }
-    // Assert that applicant is not the same as required
+    // Check if applicant is the same as required
     if (applicant === required) {
       throw new HttpException(
         'Applicant and required cannot be the same',
         HttpStatus.BAD_REQUEST,
       );
     }
-    // If the connection already exists, return an error
-    const connection_1 = await this.connectionsRepository.findOne({
-      where: { user_id: applicant_id, connected_user_id: required_id },
+    // Check if connection already exists
+    const connectionExists = await this.connectionsRepository.findOne({
+      where: [
+        { user_id: applicant_id, connected_user_id: required_id },
+        { user_id: required_id, connected_user_id: applicant_id },
+      ],
     });
-    if (connection_1) {
+    if (connectionExists) {
       throw new HttpException(
         'Connection already exists',
         HttpStatus.BAD_REQUEST,
       );
     }
-    const connection_2 = await this.connectionsRepository.findOne({
-      where: { user_id: required_id, connected_user_id: applicant_id },
-    });
-    if (connection_2) {
-      throw new HttpException(
-        'Connection already exists',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    // If the request already exists, return an error
-    const requestConnection = await this.requestConnectionsRepository.findOne({
+    // Check if request already exists
+    const requestExists = await this.requestConnectionsRepository.findOne({
       where: { applicant_id: applicant_id, required_id: required_id },
     });
-    if (requestConnection) {
+    if (requestExists) {
       throw new HttpException(
         'Connection request already exists',
         HttpStatus.BAD_REQUEST,
       );
     }
-    // If required requested the applicant, create the connection
+    // If the required user previously requested the applicant, create the connection
     const connectionRequest = await this.requestConnectionsRepository.findOne({
       where: { applicant_id: required_id, required_id: applicant_id },
     });
     if (connectionRequest) {
-      // Delete the request connection
       await this.requestConnectionsRepository.delete(connectionRequest);
       return this.createConnection(applicant_id, required_id);
     }
-    // Create the request connection
+    // Otherwise, create the request connection
     await this.requestConnectionsRepository.save({
       applicant_id: applicant_id,
       required_id: required_id,
@@ -126,6 +123,7 @@ export class ConnectionsService {
     return { message: 'Connection requested successfully' };
   }
 
+  // Delete a connection request
   async deleteRequestConnection(
     applicant_id: string,
     required_id: string,
@@ -143,28 +141,30 @@ export class ConnectionsService {
     return { message: 'Connection request deleted successfully' };
   }
 
+  // Delete a connection between two users
   async deleteConnection(
     user_id: string,
     connected_user_id: string,
   ): Promise<{ message: string }> {
-    const possible_connection_1 = await this.connectionsRepository.findOne({
+    const connection1 = await this.connectionsRepository.findOne({
       where: { user_id, connected_user_id },
     });
-    const possible_connection_2 = await this.connectionsRepository.findOne({
+    const connection2 = await this.connectionsRepository.findOne({
       where: { user_id: connected_user_id, connected_user_id: user_id },
     });
-    if (!possible_connection_1 && !possible_connection_2) {
+    if (!connection1 && !connection2) {
       throw new HttpException('Connection not found', HttpStatus.NOT_FOUND);
     }
-    if (possible_connection_1) {
-      await this.connectionsRepository.delete(possible_connection_1);
+    if (connection1) {
+      await this.connectionsRepository.delete(connection1);
     }
-    if (possible_connection_2) {
-      await this.connectionsRepository.delete(possible_connection_2);
+    if (connection2) {
+      await this.connectionsRepository.delete(connection2);
     }
     return { message: 'Connection deleted successfully' };
   }
 
+  // Count all connections of a user
   async countAllConnectionsFromUser(user_id: string): Promise<number> {
     const connections = await this.connectionsRepository
       .createQueryBuilder('connection')

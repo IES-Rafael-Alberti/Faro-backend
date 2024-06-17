@@ -44,7 +44,7 @@ export class UsersController {
   updateById(
     @Param('id') id: string,
     @Body() userDto: InputUserDto,
-  ): Promise<UserDto> {
+  ): Promise<InputUserDto> {
     return this.usersService.update(id, userDto);
   }
 

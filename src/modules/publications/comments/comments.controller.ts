@@ -17,7 +17,6 @@ export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
   @UseGuards(AuthGuard)
-  @UseGuards(UserImpersonationProtectionGuard)
   @Post()
   async addComment(
     @Body() createCommentDto: CreateCommentDto,
