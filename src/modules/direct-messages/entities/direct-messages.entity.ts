@@ -22,4 +22,9 @@ export class DirectMessage {
     type: 'uuid',
   })
   users_direct_message_id: string;
+
+  @Column({
+    type: 'date',
+  })
+  user_direct_message_date: Date;
 }

@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, MaxLength, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, IsUUID, IsDate } from 'class-validator';
 
 export class CreateDirectMessageDto {
   @IsString()
@@ -14,4 +14,7 @@ export class CreateDirectMessageDto {
   @IsString()
   @IsNotEmpty()
   receiver_id: string;
+
+  @IsDate()
+  date: Date;
 }
