@@ -16,6 +16,7 @@ import { UserImpersonationProtectionGuard } from 'src/auth/guards/UserImpersonat
 import { PublicationsService } from 'src/modules/publications/publications.service';
 import { ConnectionsService } from 'src/modules/connections/connections.service';
 import { DEFAULT_IMG } from 'src/consts';
+import { User } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -43,7 +44,7 @@ export class UsersController {
   @Patch('update/:id')
   updateById(
     @Param('id') id: string,
-    @Body() userDto: InputUserDto,
+    @Body() userDto: UserDto,
   ): Promise<UserDto> {
     return this.usersService.update(id, userDto);
   }
