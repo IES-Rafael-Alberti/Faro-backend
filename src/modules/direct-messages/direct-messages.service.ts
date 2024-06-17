@@ -5,6 +5,7 @@ import { DirectMessage } from './entities/direct-messages.entity';
 import { CreateDirectMessageDto } from './entities/direct-messages.dto';
 import { UsersService } from '../users/users.service';
 import { v4 as uuidv4 } from 'uuid';
+import moment from 'moment-timezone';
 
 @Injectable()
 export class DirectMessagesService {
@@ -84,9 +85,8 @@ export class DirectMessagesService {
     }
     const { msg } = createDirectMessageDto;
 
-    // Format the date to 'YYYY-MM-DD HH:MM:SS'
-    const formatDateForMySQL = (date: Date) => {
-      return date.toISOString().slice(0, 19).replace('T', ' ');
+    const formatDateForSpain = (date: Date) => {
+      return moment(date).tz('Europe/Madrid').format('YYYY-MM-DD HH:mm:ss');
     };
 
     const directMessage = this.directMessagesRepository.create({
@@ -94,7 +94,7 @@ export class DirectMessagesService {
       user_direct_message_sender: sender_id,
       user_direct_message_receiber: receiver_id,
       users_direct_message_id: uuidv4(),
-      user_direct_message_date: formatDateForMySQL(new Date()), // Format the date before saving
+      user_direct_message_date: formatDateForSpain(new Date()), // Format the date before saving
     });
     await this.directMessagesRepository.save(directMessage);
     return {
