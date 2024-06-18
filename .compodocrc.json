@@ -1,0 +1,9 @@
+{
+    "name": "NestJS Faro Documentation",
+    "output": "docs",
+    "theme": "default",
+    "tsconfig": "tsconfig.json",
+    "include": ["src/**/*.ts"],
+    "exclude": ["src/**/*.spec.ts"]
+  }
+  

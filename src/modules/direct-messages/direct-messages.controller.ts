@@ -9,6 +9,19 @@ import { DirectMessageImpersonationProtectionGuard } from 'src/auth/guards/Direc
 export class DirectMessagesController {
   constructor(private readonly directMessagesService: DirectMessagesService) {}
 
+  /**
+   * @api {get} /direct-messages/sender/:sender_id/receiver/:receiver_id Find all messages between two users
+   * @apiName findAllMessagesFromTwoUsers
+   * @apiGroup DirectMessages
+   *
+   * @apiParam {String} sender_id User's unique ID.
+   * @apiParam {String} receiver_id User's unique ID.
+   *
+   * @apiSuccess {Object[]} messages List of messages between two users.
+   *
+   * @apiUse AuthGuard
+   * @apiUse DirectMessageImpersonationProtectionGuard
+   */
   @UseGuards(AuthGuard)
   @UseGuards(DirectMessageImpersonationProtectionGuard)
   @Get('sender/:sender_id/receiver/:receiver_id')
@@ -22,6 +35,18 @@ export class DirectMessagesController {
     );
   }
 
+  /**
+   * @api {post} /direct-messages Create a new direct message
+   * @apiName create
+   * @apiGroup DirectMessages
+   *
+   * @apiParam {Object} createDirectMessageDto Data to create a new direct message.
+   *
+   * @apiSuccess {Object} message The created direct message.
+   *
+   * @apiUse AuthGuard
+   * @apiUse DirectMessageImpersonationProtectionGuard
+   */
   @UseGuards(AuthGuard)
   @UseGuards(DirectMessageImpersonationProtectionGuard)
   @Post()

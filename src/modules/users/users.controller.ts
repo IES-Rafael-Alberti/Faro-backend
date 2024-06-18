@@ -25,19 +25,39 @@ export class UsersController {
     private readonly connectionsService: ConnectionsService,
   ) {}
 
-  // Make this route only for admins
+  /**
+   * Get all users
+   *
+   * This route is only for admins.
+   *
+   * @returns {Promise<UserDto[]>}
+   */
   @UseGuards(AuthGuard)
+  // TODO: Make this only for admins
   @Get()
   findAll(): Promise<UserDto[]> {
     return this.usersService.findAll();
   }
 
+  /**
+   * Get a user by ID
+   *
+   * @param {string} id
+   * @returns {Promise<UserDto | null>}
+   */
   @UseGuards(AuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string): Promise<UserDto | null> {
     return this.usersService.findOneByIdUserDto(id);
   }
 
+  /**
+   * Update a user by ID
+   *
+   * @param {string} id
+   * @param {InputUserDto} userDto
+   * @returns {Promise<InputUserDto>}
+   */
   @UseGuards(AuthGuard)
   @UseGuards(UserImpersonationProtectionGuard)
   @Patch('update/:id')
@@ -48,6 +68,12 @@ export class UsersController {
     return this.usersService.update(id, userDto);
   }
 
+  /**
+   * Remove a user by ID
+   *
+   * @param {string} id
+   * @returns {Promise<void>}
+   */
   @UseGuards(AuthGuard)
   @UseGuards(UserImpersonationProtectionGuard)
   @Delete(':id')
@@ -55,6 +81,12 @@ export class UsersController {
     return this.usersService.remove(id);
   }
 
+  /**
+   * Get basic info of a user by ID
+   *
+   * @param {string} id
+   * @returns {Promise<any>}
+   */
   @UseGuards(AuthGuard)
   @Get('userBasicInfo/:id')
   async userBasicInfo(@Param('id') id: string): Promise<any> {

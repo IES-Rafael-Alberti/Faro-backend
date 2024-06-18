@@ -11,6 +11,17 @@ import { Request } from 'express';
 export class AuthGuard implements CanActivate {
   constructor(private jwtService: JwtService) {}
 
+  /**
+   * Checks if the request is authorized by validating the JWT token.
+   *
+   * @public
+   * @async
+   * @function
+   * @name canActivate
+   * @param {ExecutionContext} context - The execution context.
+   * @returns {Promise<boolean>} - Returns true if the request is authorized, otherwise throws an UnauthorizedException.
+   * @throws {UnauthorizedException} - If the JWT token is invalid or not provided.
+   */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
@@ -28,6 +39,15 @@ export class AuthGuard implements CanActivate {
     return true;
   }
 
+  /**
+   * Extracts the JWT token from the request header.
+   *
+   * @private
+   * @function
+   * @name extractTokenFromHeader
+   * @param {Request} request - The request object.
+   * @returns {string | undefined} - Returns the JWT token if it exists and is of type 'Bearer', otherwise returns undefined.
+   */
   private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;

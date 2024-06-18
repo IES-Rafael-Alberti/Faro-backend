@@ -24,24 +24,48 @@ import { UserImpersonationProtectionGuard } from 'src/auth/guards/UserImpersonat
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
+  /**
+   * @name findAll
+   * @description Fetches all profiles.
+   * @returns {Promise<Profile[]>} A promise that resolves to an array of profiles.
+   */
   @UseGuards(AuthGuard)
   @Get()
   async findAll(): Promise<Profile[]> {
     return await this.profileService.findAll();
   }
 
+  /**
+   * @name findById
+   * @description Fetches a profile by its ID.
+   * @param {string} id - The ID of the profile.
+   * @returns {Promise<Profile>} A promise that resolves to the profile.
+   */
   @UseGuards(AuthGuard)
   @Get(':id')
   async findById(@Param('id') id: string): Promise<Profile> {
     return await this.profileService.findById(id);
   }
 
+  /**
+   * @name create
+   * @description Creates a new profile.
+   * @param {Partial<Profile>} profileData - The data for the new profile.
+   * @returns {Promise<Profile>} A promise that resolves to the created profile.
+   */
   @UseGuards(UserImpersonationProtectionGuard)
   @Post()
   async create(@Body() profileData: Partial<Profile>): Promise<Profile> {
     return await this.profileService.create(profileData);
   }
 
+  /**
+   * @name update
+   * @description Updates a profile.
+   * @param {string} id - The ID of the profile to update.
+   * @param {Profile} profileData - The new data for the profile.
+   * @returns {Promise<Profile | null>} A promise that resolves to the updated profile or null if the profile was not found.
+   */
   @UseGuards(UserImpersonationProtectionGuard)
   @Put(':id')
   async update(
@@ -51,12 +75,24 @@ export class ProfileController {
     return await this.profileService.updateProfile(id, profileData);
   }
 
+  /**
+   * @name delete
+   * @description Deletes a profile.
+   * @param {string} id - The ID of the profile to delete.
+   * @returns {Promise<void>} A promise that resolves when the profile has been deleted.
+   */
   @UseGuards(UserImpersonationProtectionGuard)
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<void> {
     return await this.profileService.delete(id);
   }
 
+  /**
+   * @name getProfilePicture
+   * @description Fetches the profile picture of a profile.
+   * @param {string} id - The ID of the profile.
+   * @returns {Promise<string>} A promise that resolves to the base64 encoded profile picture.
+   */
   @UseGuards(UserImpersonationProtectionGuard)
   @Post('upload/:id')
   @UseInterceptors(

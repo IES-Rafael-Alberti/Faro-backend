@@ -17,6 +17,13 @@ import { UserImpersonationProtectionGuard } from 'src/auth/guards/UserImpersonat
 export class LikesController {
   constructor(private readonly likesService: LikesService) {}
 
+  /**
+   * @name addLike
+   * @description This method adds a like to a publication.
+   * @param {CreateLikeDto} createLikeDto - The DTO containing the user_id and publication_id.
+   * @returns {Promise<CreateLikeDto>} - The created like.
+   * @throws {HttpException} - Throws an exception if there's an error.
+   */
   @UseGuards(AuthGuard)
   @UseGuards(UserImpersonationProtectionGuard)
   @Post()
@@ -31,6 +38,12 @@ export class LikesController {
     }
   }
 
+  /**
+   * @name findAllLikesByPublicationId
+   * @description This method finds all likes by publication id.
+   * @param {string} publication_id - The id of the publication.
+   * @returns {Promise<CreateLikeDto[]>} - The likes of the publication.
+   */
   @UseGuards(AuthGuard)
   @UseGuards(UserImpersonationProtectionGuard)
   @Get(':publication_id')
@@ -40,6 +53,13 @@ export class LikesController {
     return await this.likesService.findAllLikesByPublicationId(publication_id);
   }
 
+  /**
+   * @name removeLike
+   * @description This method removes a like from a publication.
+   * @param {CreateLikeDto} createLikeDto - The DTO containing the user_id and publication_id.
+   * @returns {Promise<void>} - Returns nothing.
+   * @throws {HttpException} - Throws an exception if there's an error.
+   */
   @UseGuards(AuthGuard)
   @UseGuards(UserImpersonationProtectionGuard)
   @Delete()
@@ -54,6 +74,12 @@ export class LikesController {
     }
   }
 
+  /**
+   * @name countLikesByPublicationId
+   * @description This method counts the likes by publication id.
+   * @param {string} publication_id - The id of the publication.
+   * @returns {Promise<number>} - The count of likes.
+   */
   @UseGuards(AuthGuard)
   @Get('count/:publication_id')
   async countLikesByPublicationId(

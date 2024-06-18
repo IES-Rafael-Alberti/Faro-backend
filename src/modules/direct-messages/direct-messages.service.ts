@@ -15,6 +15,14 @@ export class DirectMessagesService {
     private usersService: UsersService,
   ) {}
 
+  /**
+   * Gets all direct messages between two users.
+   *
+   * @param {string} sender_id - The ID of the sender.
+   * @param {string} receiver_id - The ID of the receiver.
+   * @returns {Promise<CreateDirectMessageDto[]>} - A promise that resolves to an array of direct messages.
+   * @throws {HttpException} - Throws an exception if the sender or receiver does not exist or if they are the same.
+   */
   async getAllDirectMessagesFromTwoUsers(
     sender_id: string,
     receiver_id: string,
@@ -60,6 +68,13 @@ export class DirectMessagesService {
     return directMessages;
   }
 
+  /**
+   * Creates a new direct message.
+   *
+   * @param {CreateDirectMessageDto} createDirectMessageDto - The DTO containing the details of the direct message to be created.
+   * @returns {Promise<CreateDirectMessageDto>} - A promise that resolves to the created direct message.
+   * @throws {HttpException} - Throws an exception if the sender or receiver does not exist or if they are the same.
+   */
   async create(
     createDirectMessageDto: CreateDirectMessageDto,
   ): Promise<CreateDirectMessageDto> {

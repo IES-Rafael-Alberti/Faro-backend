@@ -14,7 +14,12 @@ export class RecommendationService {
     private readonly profileRepository: Repository<Profile>,
   ) {}
 
-  // Method to create a new recommendation
+  /**
+   * Creates a new recommendation.
+   * @param {RecommendationDto} recommendationDto - The recommendation data transfer object.
+   * @returns {Promise<Recommendation>} - The created recommendation.
+   * @throws {Error} - If the profile associated with the given profileId is not found.
+   */
   async create(recommendationDto: RecommendationDto): Promise<Recommendation> {
     const { profileId, senderId, message, date } = recommendationDto;
 
@@ -38,7 +43,11 @@ export class RecommendationService {
     return this.recommendationRepository.save(recommendation);
   }
 
-  // Method to find all recommendations for a given profile ID
+  /**
+   * Finds all recommendations for a given profile ID.
+   * @param {string} profileId - The ID of the profile.
+   * @returns {Promise<Recommendation[]>} - The list of recommendations for the given profile ID.
+   */
   async findAllByProfileId(profileId: string): Promise<Recommendation[]> {
     return this.recommendationRepository.find({
       where: { profile: { id: profileId } }, // Filter by profile ID
@@ -46,12 +55,22 @@ export class RecommendationService {
     });
   }
 
-  // Method to find a single recommendation by its ID
+  /**
+   * Finds a single recommendation by its ID.
+   * @param {string} id - The ID of the recommendation.
+   * @returns {Promise<Recommendation | null>} - The recommendation or null if not found.
+   */
   findOne(id: string): Promise<Recommendation | null> {
     return this.recommendationRepository.findOne({ where: { id: id } });
   }
 
-  // Method to update a recommendation
+  /**
+   * Updates a recommendation.
+   * @param {string} id - The ID of the recommendation.
+   * @param {Partial<Recommendation>} recommendation - The partial recommendation data.
+   * @returns {Promise<void>}
+   * @throws {Error} - If the recommendation with the given ID is not found.
+   */
   async update(
     id: string,
     recommendation: Partial<Recommendation>,
@@ -66,7 +85,12 @@ export class RecommendationService {
     }
   }
 
-  // Method to remove a recommendation
+  /**
+   * Removes a recommendation.
+   * @param {string} id - The ID of the recommendation.
+   * @returns {Promise<void>}
+   * @throws {Error} - If the recommendation with the given ID is not found.
+   */
   async remove(id: string): Promise<void> {
     // Delete the recommendation from the database
     const deleteResult = await this.recommendationRepository.delete(id);

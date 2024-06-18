@@ -19,7 +19,7 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({
       envFilePath: `.env`,
     }),
-    // TODO: Extract the database configuration to an external file
+    // DB connection config
     TypeOrmModule.forRoot({
       type: 'mariadb',
       host: process.env.DB_HOST || 'localhost',
@@ -29,12 +29,13 @@ import { ConfigModule } from '@nestjs/config';
       database: process.env.DB_DATABASE,
       // TODO: Add the entities to the array in and external file
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      // This line recreates the database schema every time the server starts
+      // This line modifies the db schema to match the entities
       synchronize: true,
     }),
     JwtModule.register({
       global: true,
       secret: `${process.env.JWT_KEY}`,
+      // Token duration
       signOptions: { expiresIn: '3600s' },
     }),
     UsersModule,

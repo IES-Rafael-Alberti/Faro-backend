@@ -17,7 +17,10 @@ export class UsersService {
     private profileRepository: Repository<Profile>,
   ) {}
 
-  // Method to find all users and map them to UserDto objects
+  /**
+   * Finds all users and maps them to UserDto objects.
+   * @returns {Promise<UserDto[]>} The list of users.
+   */
   async findAll(): Promise<UserDto[]> {
     const users = await this.usersRepository.find();
     return users.map((user) => ({
@@ -32,14 +35,22 @@ export class UsersService {
     }));
   }
 
-  // Method to find a user by ID and return the user entity
+  /**
+   * Finds a user by ID and returns the user entity.
+   * @param id {string} The ID of the user.
+   * @returns {Promise<User | null>} The user entity or null if not found.
+   */
   async findOneById(id: string): Promise<User | null> {
     return this.usersRepository.findOne({
       where: { id } as FindOptionsWhere<User>,
     });
   }
 
-  // Method to find a user by ID and return a UserDto object
+  /**
+   * Finds a user by ID and returns a UserDto object without the email and password.
+   * @param id {string} The ID of the user.
+   * @returns {Promise<UserDto | null>} The UserDto object or null if not found.
+   */
   async findOneByIdUserDto(id: string): Promise<UserDto | null> {
     const user = await this.usersRepository.findOne({
       where: { id } as FindOptionsWhere<User>,
@@ -59,14 +70,22 @@ export class UsersService {
     };
   }
 
-  // Method to find a user by email
+  /**
+   * Finds a user by email.
+   * @param email {string} The email of the user.
+   * @returns {Promise<User | null>} The user entity or null if not found.
+   */
   async findOneByEmail(email: string): Promise<User | null> {
     return this.usersRepository.findOne({
       where: { email } as FindOptionsWhere<User>,
     });
   }
 
-  // Method to remove a user by ID
+  /**
+   * Removes a user by ID.
+   * @param id {string} The ID of the user.
+   * @returns {Promise<void>} Resolves when the user is removed.
+   */
   async remove(id: string): Promise<void> {
     const user = await this.findOneById(id);
     if (!user) {
@@ -75,7 +94,11 @@ export class UsersService {
     await this.usersRepository.remove(user);
   }
 
-  // Method to save a user entity
+  /**
+   * Saves a user entity.
+   * @param userDto {UserDto} The user data transfer object.
+   * @returns {Promise<User>} The saved user entity.
+   */
   async save(userDto: UserDto): Promise<User> {
     const user = {
       id: userDto.id,
@@ -90,7 +113,11 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  // Method to create a new user
+  /**
+   * Creates a new user.
+   * @param userDto {UserDto} The user data transfer object.
+   * @returns {Promise<UserDto>} The created user.
+   */
   async create(userDto: UserDto): Promise<UserDto> {
     const id = uuidv4();
     userDto.id = id;
@@ -108,7 +135,12 @@ export class UsersService {
     };
   }
 
-  // Method to update an existing user
+  /**
+   * Updates an existing user and returns the updated user data.
+   * @param id {string} - The ID of the user to update.
+   * @param userDto {InputUserDto} - The new user data.
+   * @returns {Promise<InputUserDto>} - The updated user.
+   */
   async update(id: string, userDto: InputUserDto): Promise<InputUserDto> {
     const user = await this.usersRepository.findOne({ where: { id } });
     if (!user) {
@@ -130,7 +162,11 @@ export class UsersService {
     };
   }
 
-  // Method to find a profile by ID
+  /**
+   * Finds a user profile by ID and returns the profile data.
+   * @param id {string} - The ID of the profile to find.
+   * @returns {Promise<Profile | null>} - The found profile or null if not found.
+   */
   async findProfile(id: string): Promise<Profile | null> {
     return this.profileRepository.findOne({
       where: { id } as FindOptionsWhere<Profile>,
