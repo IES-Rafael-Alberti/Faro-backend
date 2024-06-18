@@ -21,12 +21,22 @@ export class ProfileService {
     private readonly entityManager: EntityManager,
   ) {}
 
-  // Method to fetch all profiles
+  /**
+   * @name findAll
+   * @description Fetches all profiles from the database.
+   * @returns {Promise<Profile[]>} An array of all profiles.
+   */
   async findAll(): Promise<Profile[]> {
     return await this.profileRepository.find();
   }
 
-  // Method to find a profile by ID
+  /**
+   * @name findById
+   * @description Fetches a profile by its ID.
+   * @param {string} id - The ID of the profile to fetch.
+   * @returns {Promise<Profile>} The profile with the given ID.
+   * @throws {NotFoundException} If no profile with the given ID is found.
+   */
   async findById(id: string): Promise<Profile> {
     const profile = await this.profileRepository.findOne({ where: { id } });
 
@@ -36,13 +46,25 @@ export class ProfileService {
     return profile;
   }
 
-  // Method to create a new profile
+  /**
+   * @name create
+   * @description Creates a new profile.
+   * @param {Partial<Profile>} profileData - The data for the new profile.
+   * @returns {Promise<Profile>} The newly created profile.
+   */
   async create(profileData: Partial<Profile>): Promise<Profile> {
     const profile = this.profileRepository.create(profileData);
     return await this.profileRepository.save(profile);
   }
 
-  // Method to update a profile
+  /**
+   * @name updateProfile
+   * @description Updates a profile.
+   * @param {string} id - The ID of the profile to update.
+   * @param {any} updateData - The new data for the profile.
+   * @returns {Promise<Profile | null>} The updated profile, or null if the profile could not be found.
+   * @throws {NotFoundException} If no profile with the given ID is found.
+   */
   async updateProfile(id: string, updateData: any): Promise<Profile | null> {
     let updatedProfile: Profile | null = null;
 
@@ -100,12 +122,24 @@ export class ProfileService {
     return updatedProfile;
   }
 
-  // Method to delete a profile
+  /**
+   * @name delete
+   * @description Deletes a profile.
+   * @param {string} id - The ID of the profile to delete.
+   * @returns {Promise<void>}
+   */
   async delete(id: string): Promise<void> {
     await this.profileRepository.delete(id);
   }
 
-  // Method to update profile picture
+  /**
+   * @name updateProfilePicture
+   * @description Updates the profile picture of a profile.
+   * @param {string} id - The ID of the profile to update.
+   * @param {Express.Multer.File} file - The new profile picture.
+   * @returns {Promise<Profile>} The updated profile.
+   * @throws {NotFoundException} If no profile with the given ID is found.
+   */
   async updateProfilePicture(
     id: string,
     file: Express.Multer.File,
