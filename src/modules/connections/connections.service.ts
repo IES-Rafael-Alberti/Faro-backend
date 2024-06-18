@@ -17,7 +17,12 @@ export class ConnectionsService {
     private usersService: UsersService,
   ) {}
 
-  // Get requests made to a user
+  /**
+   * @name getRequestsFromUser
+   * @description Retrieves all connection requests made to a specific user.
+   * @param {string} user_id - The ID of the user to retrieve requests for.
+   * @returns {Promise<string[]>} - A promise that resolves to an array of request IDs.
+   */
   async getRequestsFromUser(user_id: string): Promise<string[]> {
     const requests = await this.requestConnectionsRepository.find({
       where: { applicant_id: user_id },
@@ -25,7 +30,12 @@ export class ConnectionsService {
     return requests.map((request) => request.required_id);
   }
 
-  // Get requests made by a user
+  /**
+   * @name getRequestMadeByUser
+   * @description Retrieves all connection requests made by a specific user.
+   * @param {string} user_id - The ID of the user to retrieve requests from.
+   * @returns {Promise<string[]>} - A promise that resolves to an array of request IDs.
+   */
   async getRequestMadeByUser(user_id: string): Promise<string[]> {
     const requests = await this.requestConnectionsRepository.find({
       where: { required_id: user_id },
@@ -33,7 +43,12 @@ export class ConnectionsService {
     return requests.map((request) => request.required_id);
   }
 
-  // Get all connections of a user
+  /**
+   * @name getAllConnectionsFromUser
+   * @description Retrieves all connections of a specific user.
+   * @param {string} user_id - The ID of the user to retrieve connections for.
+   * @returns {Promise<string[]>} - A promise that resolves to an array of connection IDs.
+   */
   async getAllConnectionsFromUser(user_id: string): Promise<string[]> {
     const connections = await this.connectionsRepository
       .createQueryBuilder('connection')
@@ -48,7 +63,13 @@ export class ConnectionsService {
     });
   }
 
-  // Create a connection between two users
+  /**
+   * @name createConnection
+   * @description Creates a connection between two users.
+   * @param {string} user_id - The ID of the first user.
+   * @param {string} connected_user_id - The ID of the second user.
+   * @returns {Promise<{ message: string }>} - A promise that resolves to a message indicating the connection was created successfully.
+   */
   async createConnection(
     user_id: string,
     connected_user_id: string,
@@ -62,7 +83,13 @@ export class ConnectionsService {
     return { message: 'Connection created successfully' };
   }
 
-  // Request a connection between two users
+  /**
+   * @name requestConnection
+   * @description Requests a connection between two users. It will create a request from the applicant to the required user. If the required user has previously requested the applicant, the connection will be created. Otherwise will create a request connection and wait until this method is called again for the required user.
+   * @param {string} applicant_id - The ID of the user making the request.
+   * @param {string} required_id - The ID of the user to connect to.
+   * @returns {Promise<{ message: string }>} - A promise that resolves to a message indicating the connection request was made successfully.
+   */
   async requestConnection(
     applicant_id: string,
     required_id: string,
@@ -123,7 +150,13 @@ export class ConnectionsService {
     return { message: 'Connection requested successfully' };
   }
 
-  // Delete a connection request
+  /**
+   * @name deleteRequestConnection
+   * @description Deletes a connection request between two users.
+   * @param {string} applicant_id - The ID of the user who made the request.
+   * @param {string} required_id - The ID of the user the request was made to.
+   * @returns {Promise<{ message: string }>} - A promise that resolves to a message indicating the connection request was deleted successfully.
+   */
   async deleteRequestConnection(
     applicant_id: string,
     required_id: string,
@@ -141,7 +174,13 @@ export class ConnectionsService {
     return { message: 'Connection request deleted successfully' };
   }
 
-  // Delete a connection between two users
+  /**
+   * @name deleteConnection
+   * @description Deletes a connection between two users.
+   * @param {string} user_id - The ID of the first user.
+   * @param {string} connected_user_id - The ID of the second user.
+   * @returns {Promise<{ message: string }>} - A promise that resolves to a message indicating the connection was deleted successfully.
+   */
   async deleteConnection(
     user_id: string,
     connected_user_id: string,
@@ -164,7 +203,12 @@ export class ConnectionsService {
     return { message: 'Connection deleted successfully' };
   }
 
-  // Count all connections of a user
+  /**
+   * @name countAllConnectionsFromUser
+   * @description Counts all connections of a specific user.
+   * @param {string} user_id - The ID of the user to count connections for.
+   * @returns {Promise<number>} - A promise that resolves to the number of connections the user has.
+   */
   async countAllConnectionsFromUser(user_id: string): Promise<number> {
     const connections = await this.connectionsRepository
       .createQueryBuilder('connection')
