@@ -5,7 +5,7 @@ import { DirectMessage } from './entities/direct-messages.entity';
 import { CreateDirectMessageDto } from './entities/direct-messages.dto';
 import { UsersService } from '../users/users.service';
 import { v4 as uuidv4 } from 'uuid';
-import moment from 'moment-timezone';
+import { DateTime } from 'luxon'; // Import DateTime from luxon
 
 @Injectable()
 export class DirectMessagesService {
@@ -27,7 +27,6 @@ export class DirectMessagesService {
     sender_id: string,
     receiver_id: string,
   ): Promise<CreateDirectMessageDto[]> {
-    // Assert that the sender and receiver exist
     const sender = await this.usersService.findOneById(sender_id);
     const receiver = await this.usersService.findOneById(receiver_id);
     if (!sender || !receiver) {
@@ -36,7 +35,6 @@ export class DirectMessagesService {
         HttpStatus.NOT_FOUND,
       );
     }
-    // Assert that sender is not the same as receiver
     if (sender_id === receiver_id) {
       throw new HttpException(
         'Sender and receiver cannot be the same',
@@ -80,9 +78,9 @@ export class DirectMessagesService {
   async create(
     createDirectMessageDto: CreateDirectMessageDto,
   ): Promise<CreateDirectMessageDto> {
-    // TODO: Validate the sender and receiver are connected
-    const { sender_id, receiver_id } = createDirectMessageDto;
-    // Assert that the sender and receiver exist
+    const { sender_id, receiver_id, msg } = createDirectMessageDto;
+
+    // Ensure sender and receiver exist
     const sender = await this.usersService.findOneById(sender_id);
     const receiver = await this.usersService.findOneById(receiver_id);
     if (!sender || !receiver) {
@@ -91,27 +89,30 @@ export class DirectMessagesService {
         HttpStatus.NOT_FOUND,
       );
     }
-    // Assert that sender is not the same as receiver
+
+    // Ensure sender is not the same as receiver
     if (sender_id === receiver_id) {
       throw new HttpException(
         'Sender and receiver cannot be the same',
         HttpStatus.BAD_REQUEST,
       );
     }
-    const { msg } = createDirectMessageDto;
 
-    const formatDateForSpain = (date: Date) => {
-      return moment(date).tz('Europe/Madrid').format('YYYY-MM-DD HH:mm:ss');
-    };
+    // Get the current time in Spain
+    const spainTime = DateTime.now().setZone('Europe/Madrid');
 
-    const directMessage = this.directMessagesRepository.create({
-      user_direct_message_msg: msg,
-      user_direct_message_sender: sender_id,
-      user_direct_message_receiber: receiver_id,
-      users_direct_message_id: uuidv4(),
-      user_direct_message_date: formatDateForSpain(new Date()), // Format the date before saving
-    });
+    // Create DirectMessage entity
+    const directMessage = new DirectMessage();
+    directMessage.user_direct_message_msg = msg;
+    directMessage.user_direct_message_sender = sender_id;
+    directMessage.user_direct_message_receiber = receiver_id;
+    directMessage.users_direct_message_id = uuidv4();
+    directMessage.user_direct_message_date = spainTime.toJSDate(); // Convert Luxon DateTime to JavaScript Date
+
+    // Save to database
     await this.directMessagesRepository.save(directMessage);
+
+    // Return the DTO with the saved date
     return {
       ...createDirectMessageDto,
       date: directMessage.user_direct_message_date,
