@@ -23,6 +23,6 @@ export class DirectMessage {
   })
   users_direct_message_id: string;
 
-  @Column({ type: 'date' }) // Assuming 'timestamp' type for dates
+  @Column({ type: 'timestamp' }) // Assuming 'timestamp' type for dates
   user_direct_message_date: Date;
 }
