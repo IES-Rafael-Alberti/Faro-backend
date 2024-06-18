@@ -47,4 +47,4 @@ dev.env
 src/auth/constants.ts
 
 # Docs
-documentation
+docs
