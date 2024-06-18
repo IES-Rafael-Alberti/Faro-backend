@@ -45,3 +45,6 @@ dev.env
 /db_model/init.sql
 
 src/auth/constants.ts
+
+# Docs
+documentation
