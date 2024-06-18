@@ -12,14 +12,24 @@ export class CommentsService {
     private commentsRepository: Repository<Comment>,
   ) {}
 
-  // Method to create a new comment
+  /**
+   * @method create
+   * @description This method creates a new comment.
+   * @param {CreateCommentDto} createCommentDto - The data transfer object containing the details of the comment to be created.
+   * @returns {Promise<CreateCommentDto>} - The created comment.
+   */
   async create(createCommentDto: CreateCommentDto): Promise<CreateCommentDto> {
     const comment = this.commentsRepository.create(createCommentDto);
     await this.commentsRepository.save(comment);
     return comment;
   }
 
-  // Method to find all comments by publication ID
+  /**
+   * @method findAllCommentsByPublicationId
+   * @description This method finds all comments associated with a specific publication.
+   * @param {string} publication_id - The ID of the publication.
+   * @returns {Promise<CreateCommentDto[]>} - An array of comments associated with the publication.
+   */
   async findAllCommentsByPublicationId(
     publication_id: string,
   ): Promise<CreateCommentDto[]> {
@@ -38,7 +48,14 @@ export class CommentsService {
     });
   }
 
-  // Method to add a comment
+  /**
+   * @method addComment
+   * @description This method adds a new comment to a specific publication.
+   * @param {string} user_id - The ID of the user adding the comment.
+   * @param {string} publication_id - The ID of the publication.
+   * @param {string} comment - The comment text.
+   * @returns {Promise<CreateCommentDto>} - The added comment.
+   */
   async addComment(
     user_id: string,
     publication_id: string,
@@ -60,7 +77,14 @@ export class CommentsService {
     return this.create(commentDto);
   }
 
-  // Method to remove a comment
+  /**
+   * @method removeComment
+   * @description This method removes a comment from a specific publication.
+   * @param {string} id - The ID of the comment.
+   * @param {string} user_id - The ID of the user who added the comment.
+   * @param {string} publication_id - The ID of the publication.
+   * @returns {Promise<void>} - No return value.
+   */
   async removeComment(
     id: string,
     user_id: string,
@@ -79,7 +103,12 @@ export class CommentsService {
     await this.commentsRepository.remove(comment);
   }
 
-  // Method to count comments by publication ID
+  /**
+   * @method countCommentsByPublicationId
+   * @description This method counts the number of comments associated with a specific publication.
+   * @param {string} publication_id - The ID of the publication.
+   * @returns {Promise<number>} - The number of comments associated with the publication.
+   */
   async countCommentsByPublicationId(publication_id: string): Promise<number> {
     const comments = await this.commentsRepository.find({
       where: { publication_id } as FindOptionsWhere<Comment>,

@@ -14,7 +14,13 @@ export class PublicationsService {
     private usersService: UsersService,
   ) {}
 
-  // Method to find all publications with pagination
+  /**
+   * Method to find all publications with pagination.
+   *
+   * @param {number} page - The page number to retrieve. Defaults to 1.
+   * @param {number} limit - The number of publications per page. Defaults to 16.
+   * @returns {Promise} - A Promise that resolves to an object containing the publications data, current page, and total pages.
+   */
   async findAll(
     page = 1,
     limit = 16,
@@ -61,7 +67,12 @@ export class PublicationsService {
     };
   }
 
-  // Method to create a new publication
+  /**
+   * Method to create a new publication.
+   *
+   * @param {CreatePublicationDto} createPublicationDto - The data transfer object containing the publication data.
+   * @returns {Promise} - A Promise that resolves to the created publication data transfer object.
+   */
   async create(
     createPublicationDto: CreatePublicationDto,
   ): Promise<CreatePublicationDto> {
@@ -94,7 +105,13 @@ export class PublicationsService {
       }));
   }
 
-  // Method to remove a publication
+  /**
+   * Method to remove a publication.
+   *
+   * @param {string} user_id - The ID of the user.
+   * @param {string} msg_id - The ID of the publication.
+   * @returns {Promise} - A Promise that resolves when the publication is removed.
+   */
   async remove(user_id: string, msg_id: string): Promise<void> {
     // Ensure the publication exists
     const publication = await this.publicationsRepository.findOne({
@@ -119,7 +136,12 @@ export class PublicationsService {
     await this.publicationsRepository.delete(msg_id);
   }
 
-  // Method to find all publications from a user
+  /**
+   * Method to find all publications from a user.
+   *
+   * @param {string} user_id - The ID of the user.
+   * @returns {Promise} - A Promise that resolves to an array of the user's publications data transfer objects.
+   */
   async findAllFromUser(user_id: string): Promise<CreatePublicationDto[]> {
     // Ensure the user exists
     const user = await this.usersService.findOneById(user_id);
@@ -155,7 +177,12 @@ export class PublicationsService {
     }
   }
 
-  // Method to count all publications from a user
+  /**
+   * Method to count all publications from a user.
+   *
+   * @param {string} user_id - The ID of the user.
+   * @returns {Promise} - A Promise that resolves to the count of the user's publications.
+   */
   async countAllPublicationsFromUser(user_id: string): Promise<number> {
     // Ensure the user exists
     const user = await this.usersService.findOneById(user_id);

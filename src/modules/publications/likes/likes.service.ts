@@ -11,14 +11,22 @@ export class LikesService {
     private likesRepository: Repository<Like>,
   ) {}
 
-  // Method to create a new like
+  /**
+   * Creates a new like.
+   * @param {CreateLikeDto} createLikeDto - The DTO for creating a new like.
+   * @returns {Promise<CreateLikeDto>} The created like.
+   */
   async create(createLikeDto: CreateLikeDto): Promise<CreateLikeDto> {
     const like = this.likesRepository.create(createLikeDto);
     await this.likesRepository.save(like);
     return like;
   }
 
-  // Method to find all likes by publication ID
+  /**
+   * Finds all likes by publication ID.
+   * @param {string} publication_id - The ID of the publication.
+   * @returns {Promise<CreateLikeDto[]>} The likes for the publication.
+   */
   async findAllLikesByPublicationId(
     publication_id: string,
   ): Promise<CreateLikeDto[]> {
@@ -35,7 +43,13 @@ export class LikesService {
     });
   }
 
-  // Method to add a like
+  /**
+   * Adds a like.
+   * @param {string} user_id - The ID of the user.
+   * @param {string} publication_id - The ID of the publication.
+   * @returns {Promise<CreateLikeDto>} The created like.
+   * @throws {HttpException} If the like already exists.
+   */
   async addLike(
     user_id: string,
     publication_id: string,
@@ -54,7 +68,13 @@ export class LikesService {
     return this.create(likeDto);
   }
 
-  // Method to remove a like
+  /**
+   * Removes a like.
+   * @param {string} user_id - The ID of the user.
+   * @param {string} publication_id - The ID of the publication.
+   * @returns {Promise<void>}
+   * @throws {HttpException} If the like does not exist.
+   */
   async removeLike(user_id: string, publication_id: string): Promise<void> {
     const like = await this.likesRepository.findOne({
       where: { user_id, publication_id } as FindOptionsWhere<Like>,
@@ -65,7 +85,11 @@ export class LikesService {
     await this.likesRepository.remove(like);
   }
 
-  // Method to count likes by publication ID
+  /**
+   * Counts likes by publication ID.
+   * @param {string} publication_id - The ID of the publication.
+   * @returns {Promise<number>} The number of likes for the publication.
+   */
   async countLikesByPublicationId(publication_id: string): Promise<number> {
     return this.likesRepository.count({
       where: { publication_id } as FindOptionsWhere<Like>,

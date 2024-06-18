@@ -33,6 +33,7 @@ export class UsersController {
    * @returns {Promise<UserDto[]>}
    */
   @UseGuards(AuthGuard)
+  // TODO: Make this only for admins
   @Get()
   findAll(): Promise<UserDto[]> {
     return this.usersService.findAll();

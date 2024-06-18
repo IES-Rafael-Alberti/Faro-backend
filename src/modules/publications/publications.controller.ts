@@ -16,6 +16,11 @@ import { PublicationImpersonationProtectionGuard } from 'src/auth/guards/Publica
 export class PublicationsController {
   constructor(private readonly publicationsService: PublicationsService) {}
 
+  /**
+   * Get all publications with a limit.
+   * @param {number} limit - The number of publications to return.
+   * @returns {Promise} A promise that resolves to an object containing the data, current page, and total pages.
+   */
   @UseGuards(AuthGuard)
   @Get('/:limit')
   findAll(@Param('limit') limit: number): Promise<{
@@ -26,6 +31,11 @@ export class PublicationsController {
     return this.publicationsService.findAll(limit);
   }
 
+  /**
+   * Create a new publication.
+   * @param {CreatePublicationDto} createPublicationDto - The data to create a new publication.
+   * @returns {Promise} A promise that resolves to the created publication.
+   */
   @UseGuards(AuthGuard)
   @UseGuards(PublicationImpersonationProtectionGuard)
   @Post()
@@ -35,6 +45,12 @@ export class PublicationsController {
     return this.publicationsService.create(createPublicationDto);
   }
 
+  /**
+   * Remove a publication.
+   * @param {string} user_id - The ID of the user.
+   * @param {string} msg_id - The ID of the message.
+   * @returns {Promise} A promise that resolves when the publication is removed.
+   */
   @UseGuards(AuthGuard)
   @UseGuards(PublicationImpersonationProtectionGuard)
   @Delete('user/:user_id/msg/:msg_id')
@@ -45,12 +61,22 @@ export class PublicationsController {
     return this.publicationsService.remove(user_id, msg_id);
   }
 
+  /**
+   * Get all publications from a user.
+   * @param {string} id - The ID of the user.
+   * @returns {Promise} A promise that resolves to an array of publications.
+   */
   @UseGuards(AuthGuard)
   @Get('user/:id')
   findAllFromUser(@Param('id') id: string): Promise<CreatePublicationDto[]> {
     return this.publicationsService.findAllFromUser(id);
   }
 
+  /**
+   * Count all publications from a user.
+   * @param {string} id - The ID of the user.
+   * @returns {Promise} A promise that resolves to the count of publications.
+   */
   @UseGuards(AuthGuard)
   @Get('user/:id/count')
   countAllFromUser(@Param('id') id: string): Promise<number> {
