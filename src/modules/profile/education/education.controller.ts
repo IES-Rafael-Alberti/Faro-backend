@@ -35,7 +35,8 @@ export class EducationController {
    */
   @UseGuards(AuthGuard)
   @Get('profile/:id')
-  findAll(@Param(':id') id: string): Promise<Education[]> {
+  findAll(@Param('id') id: string): Promise<Education[]> {
+    console.log('ID', id);
     return this.educationService
       .findAllByProfileId(id)
       .then((result) => {

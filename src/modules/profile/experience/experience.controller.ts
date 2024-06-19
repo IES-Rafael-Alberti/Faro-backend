@@ -39,7 +39,7 @@ export class ExperienceController {
    */
   @UseGuards(AuthGuard)
   @Get('profile/:id')
-  findAll(@Param(':id') id: string): Promise<Experience[]> {
+  findAll(@Param('id') id: string): Promise<Experience[]> {
     return this.experienceService
       .findAllByProfileId(id)
       .then((result) => {

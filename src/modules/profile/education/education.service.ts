@@ -27,10 +27,15 @@ export class EducationService {
    * @returns {Promise<Education[]>} - The education records found.
    */
   async findAllByProfileId(profileId: string): Promise<Education[]> {
-    return this.educationRepository.find({
+    console.log(`Finding all education entries for profileId: ${profileId}`);
+    const educations = await this.educationRepository.find({
       where: { profile: { id: profileId } }, // Filtering by profile ID
       relations: ['profile'], // Eager loading 'profile' relation
     });
+    console.log(
+      `Found ${educations.length} education entries for profileId: ${profileId}`,
+    );
+    return educations;
   }
 
   /**
