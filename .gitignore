@@ -48,3 +48,6 @@ src/auth/constants.ts
 
 # Docs
 docs
+
+# SSL Certs
+src/secrets
